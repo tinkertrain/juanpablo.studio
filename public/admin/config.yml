@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: tinkertrain/juanpablo.studio
   branch: main
+  base_url: https://juanpablo.studio
+  auth_endpoint: api/auth
   commit_messages:
     create: "Create {{collection}} “{{slug}}”"
     update: "Update {{collection}} “{{slug}}”"
@@ -8,7 +11,10 @@ backend:
     uploadMedia: "[skip ci] Upload “{{path}}”"
     deleteMedia: "[skip ci] Delete “{{path}}”"
 
+# Run `npx decap-server` and load /admin/ from localhost to edit against your
+# local git repo instead of GitHub. Ignored in production.
 local_backend: true
+
 media_folder: public/img
 public_folder: /img
 
@@ -43,22 +49,6 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Body", name: "body", widget: "markdown" }
-      # - {
-      #     label: "Nature of Enquiry",
-      #     name: "nature-of-enquiry",
-      #     widget: "select",
-      #     multiple: true,
-      #     min: 1,
-      #     options:
-      #       [
-      #         { label: "General", value: "general" },
-      #         { label: "Purchase", value: "purchase" },
-      #         { label: "Commissions", value: "commissions" },
-      #         { label: "Exhibitions", value: "exhibitions" },
-      #         { label: "Gallery Feature", value: "gallery-feature" },
-      #         { label: "Other", value: "other" },
-      #       ],
-      #   }
   - name: "work"
     label: "Work"
     folder: "src/content/work"
