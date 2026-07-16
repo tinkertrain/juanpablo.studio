@@ -1,0 +1,68 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Gallery from '../../templates/Gallery.astro';
+import PaintingDetail from '../../templates/PaintingDetail.astro';
+import { SECTIONS, filterPaintings } from '../../config/sections';
+
+type Painting = CollectionEntry<'studio' | 'urban' | 'pleinair'>;
+
+export async function getStaticPaths() {
+  const byDateDesc = (a: Painting, b: Painting) =>
+    new Date(b.data.date || 0).getTime() - new Date(a.data.date || 0).getTime();
+
+  const paths: any[] = [];
+
+  for (const section of SECTIONS) {
+    const paintings = (
+      (await getCollection(section.collection)) as Painting[]
+    ).sort(byDateDesc);
+
+    // Section index (rest undefined => /studio-paintings)
+    paths.push({
+      params: { section: section.slug, rest: undefined },
+      props: { kind: 'index', section, paintings, activeCategory: null },
+    });
+
+    // Category filters
+    for (const category of section.categories) {
+      paths.push({
+        params: { section: section.slug, rest: category },
+        props: {
+          kind: 'index',
+          section,
+          paintings: filterPaintings(paintings, category),
+          activeCategory: category,
+        },
+      });
+    }
+
+    // Painting details
+    for (const painting of paintings) {
+      const rest =
+        section.hasCategories && painting.data.category
+          ? `${painting.data.category}/${painting.id}`
+          : painting.id;
+      paths.push({
+        params: { section: section.slug, rest },
+        props: { kind: 'detail', section, painting },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const props = Astro.props as any;
+---
+
+{
+  props.kind === 'detail' ? (
+    <PaintingDetail section={props.section} painting={props.painting} />
+  ) : (
+    <Gallery
+      section={props.section}
+      paintings={props.paintings}
+      activeCategory={props.activeCategory}
+    />
+  )
+}
