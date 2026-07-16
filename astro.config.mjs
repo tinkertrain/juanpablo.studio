@@ -6,7 +6,7 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://clay-astro-theme.netlify.app',
+    site: 'https://juanpablo.studio',
     integrations: [sitemap()],
     adapter: cloudflare()
 });
