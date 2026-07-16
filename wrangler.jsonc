@@ -1,16 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "portfolio",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-07-13",
-  "observability": {
-    "enabled": true
-  },
   "compatibility_flags": [
     "global_fetch_strictly_public",
     "nodejs_compat"
   ],
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     "binding": "ASSETS",
-    "directory": "dist"
+    "directory": "./dist/client"
   }
 }
