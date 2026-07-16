@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'pages'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, portrait, instagram, email } = entry.data;
+
+const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
+---
+
+<Layout title={title} description="Painter, urban sketcher, plein air artist">
+  <section class="home">
+    {portrait && <img class="home-portrait" src={portrait} alt={title} />}
+    <div class="home-intro"><Content /></div>
+
+    <div class="home-contact">
+      {instagram && (
+        <a class="home-link" href={instagram} target="_blank" rel="noopener">
+          Instagram
+        </a>
+      )}
+      {encodedEmail && (
+        <a class="home-link" id="home-email" data-e={encodedEmail} href="#">
+          Email
+        </a>
+      )}
+    </div>
+  </section>
+
+  <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      const el = document.getElementById('home-email');
+      if (!el) return;
+      const addr = atob(el.dataset.e);
+      el.href = 'mailto:' + addr;
+      el.textContent = addr;
+    });
+  </script>
+</Layout>
+
+<style>
+  .home {
+    padding: 0 var(--margin);
+    max-width: var(--large);
+    margin: 0 auto;
+  }
+  .home-portrait {
+    width: 100%;
+    max-width: 320px;
+    border-radius: var(--radius);
+    display: block;
+    margin: 2rem 0;
+  }
+  .home-intro {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .home-contact {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .home-link {
+    color: var(--color-base);
+    text-decoration: underline;
+  }
+</style>

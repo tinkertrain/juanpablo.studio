@@ -1,7 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+import Home from '../templates/Home.astro';
+
+const entry = await getEntry('pages', 'index');
+if (!entry) throw new Error('Missing pages/index.md content entry');
 ---
 
-<Layout title="Juan Pablo">
-  <p style="padding: 2rem;">Home page coming soon.</p>
-</Layout>
+<Home entry={entry} />
