@@ -45,12 +45,10 @@ const { title, description } = Astro.props;
         </script>
     </head>
     <body class="site-wrapper">
-        <Header title={title} />
+        <Header />
 
         <main id="site-main" class="site-main">
-            <div id="swup" class="transition-fade">
-                <slot />
-            </div>
+            <slot />
         </main>
 
         <Footer />
