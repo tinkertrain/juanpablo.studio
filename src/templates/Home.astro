@@ -29,6 +29,8 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
         )}
       </div>
     </div>
+
+    {background && <div class="home-hero-mobile" />}
   </section>
 
   <script is:inline>
@@ -100,7 +102,13 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
     color: var(--cobalt-deep)
   }
 
-  /* Mobile: drop the photo entirely and center the text. */
+  /* Desktop shows the photo as the section background; the mobile strip is hidden. */
+  .home-hero-mobile {
+    display: none;
+  }
+
+  /* Mobile: move the photo below the text as a cropped strip that favors the
+     palette side and clips most of the empty sketchbook page. */
   @media (max-width: 850px) {
     .home.has-hero {
       min-height: 0;
@@ -124,6 +132,15 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
     }
     .home.has-hero .home-contact {
       justify-content: center;
+    }
+    .home.has-hero .home-hero-mobile {
+      display: block;
+      margin-top: 2rem;
+      height: 45vh;
+      border-radius: var(--radius);
+      background-image: var(--home-bg);
+      background-size: cover;
+      background-position: 0% 73%;
     }
   }
 </style>
