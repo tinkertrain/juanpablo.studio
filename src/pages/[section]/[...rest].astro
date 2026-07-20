@@ -2,7 +2,11 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Gallery from '../../templates/Gallery.astro';
 import PaintingDetail from '../../templates/PaintingDetail.astro';
-import { SECTIONS, filterPaintings } from '../../config/sections';
+import {
+  SECTIONS,
+  filterPaintings,
+  availableCategories,
+} from '../../config/sections';
 
 type Painting = CollectionEntry<'studio' | 'urban' | 'pleinair'>;
 
@@ -17,20 +21,30 @@ export async function getStaticPaths() {
       (await getCollection(section.collection)) as Painting[]
     ).sort(byDateDesc);
 
+    // Only offer filters for mediums that actually have paintings.
+    const categories = availableCategories(section, paintings);
+
     // Section index (rest undefined => /studio-paintings)
     paths.push({
       params: { section: section.slug, rest: undefined },
-      props: { kind: 'index', section, paintings, activeCategory: null },
+      props: {
+        kind: 'index',
+        section,
+        paintings,
+        categories,
+        activeCategory: null,
+      },
     });
 
     // Category filters
-    for (const category of section.categories) {
+    for (const category of categories) {
       paths.push({
         params: { section: section.slug, rest: category },
         props: {
           kind: 'index',
           section,
           paintings: filterPaintings(paintings, category),
+          categories,
           activeCategory: category,
         },
       });
@@ -62,6 +76,7 @@ const props = Astro.props as any;
     <Gallery
       section={props.section}
       paintings={props.paintings}
+      categories={props.categories}
       activeCategory={props.activeCategory}
     />
   )

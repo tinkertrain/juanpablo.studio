@@ -12,10 +12,11 @@ import {
 interface Props {
   section: Section;
   paintings: CollectionEntry<'studio' | 'urban' | 'pleinair'>[];
+  categories: string[];
   activeCategory: string | null;
 }
 
-const { section, paintings, activeCategory } = Astro.props;
+const { section, paintings, categories, activeCategory } = Astro.props;
 
 const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0];
 ---
@@ -24,7 +25,7 @@ const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0
   <section class="gallery">
     <h1 class="gallery-title">{section.title}</h1>
 
-    {section.hasCategories && (
+    {section.hasCategories && categories.length > 0 && (
       <nav class="gallery-filters" aria-label="Filter by medium">
         <a
           href={sectionUrl(section)}
@@ -32,7 +33,7 @@ const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0
         >
           All
         </a>
-        {section.categories.map((cat) => (
+        {categories.map((cat) => (
           <a
             href={categoryUrl(section, cat)}
             class={`gallery-chip ${activeCategory === cat ? 'is-active' : ''}`}

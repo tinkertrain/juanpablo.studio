@@ -67,3 +67,14 @@ export function filterPaintings<T extends { data: { category?: string } }>(
   if (!category) return paintings;
   return paintings.filter((p) => p.data.category === category);
 }
+
+export function availableCategories<T extends { data: { category?: string } }>(
+  section: Section,
+  paintings: T[],
+): string[] {
+  if (!section.hasCategories) return [];
+  const present = new Set(
+    paintings.map((p) => p.data.category).filter(Boolean),
+  );
+  return section.categories.filter((cat) => present.has(cat));
+}

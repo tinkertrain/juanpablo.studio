@@ -7,6 +7,7 @@ import {
   categoryUrl,
   paintingUrl,
   filterPaintings,
+  availableCategories,
 } from './sections';
 
 const studio = getSectionBySlug('studio-paintings')!;
@@ -59,5 +60,31 @@ describe('sections config', () => {
     ];
     expect(filterPaintings(items, 'oil')).toHaveLength(1);
     expect(filterPaintings(items, null)).toHaveLength(2);
+  });
+
+  it('lists only categories present in the paintings', () => {
+    const items = [
+      { data: { category: 'gouache' } },
+      { data: { category: 'oil' } },
+    ];
+    expect(availableCategories(studio, items)).toEqual(['oil', 'gouache']);
+  });
+
+  it('preserves the defined category order, not content order', () => {
+    const items = [
+      { data: { category: 'mixed-media' } },
+      { data: { category: 'oil' } },
+    ];
+    expect(availableCategories(studio, items)).toEqual(['oil', 'mixed-media']);
+  });
+
+  it('returns no categories for a section without categories', () => {
+    const items = [{ data: { category: 'oil' } }];
+    expect(availableCategories(urban, items)).toEqual([]);
+  });
+
+  it('returns no categories when nothing matches the defined list', () => {
+    const items = [{ data: {} }, { data: { category: 'pastel' } }];
+    expect(availableCategories(studio, items)).toEqual([]);
   });
 });
