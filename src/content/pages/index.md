@@ -2,12 +2,10 @@
 templateKey: home
 title: Juan Pablo
 background: /img/usk_bg.jpg
-instagram: https://instagram.com/REPLACE
-email: REPLACE@example.com
+instagram: https://www.instagram.com/juanpablo_artista/
+email: hello@juanpablo.studio
 ---
 
-I travel,
+Hello! I'm an artist that travels the world
 <br>
-I see,
-<br>
-I paint.
+and paints it.

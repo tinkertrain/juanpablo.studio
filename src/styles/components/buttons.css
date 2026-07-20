@@ -70,7 +70,7 @@ button:disabled,
 input[type="submit"],
 input[type="reset"],
 input[type="button"],
-button,
+button:not(.theme-toggle),
 .button {
   color: #fff !important;
   background-color: #000;
@@ -80,7 +80,7 @@ button,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
 input[type="button"]:hover,
-button:hover,
+button:not(.theme-toggle):hover,
 .button:hover {
   text-decoration: none;
   color: color(var(--color-primary) l(-15%)) !important;

@@ -8,7 +8,7 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, background, instagram, email } = entry.data;
+const { title, background, email } = entry.data;
 
 const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
 ---
@@ -22,13 +22,8 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
       <div class="home-intro"><Content /></div>
 
       <div class="home-contact">
-        {instagram && (
-          <a class="home-link" href={instagram} target="_blank" rel="noopener">
-            Instagram
-          </a>
-        )}
         {encodedEmail && (
-          <a class="home-link" id="home-email" data-e={encodedEmail} href="#">
+          <span>👋</span><a class="home-link" id="home-email" data-e={encodedEmail} href="#">
             Email
           </a>
         )}
@@ -55,21 +50,25 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
   }
   .home-intro {
     font-family: var(--font-serif);
-    font-size: 1.9rem;
+    font-size: 2rem;
     line-height: 1.6;
     margin-bottom: 2rem;
   }
   .home-contact {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 2rem;
+    justify-content: flex-end;
   }
   .home-link {
-    font-family: var(--font-sans-serif);
-    font-size: 1.6rem;
-    color: var(--color-base);
     text-decoration: underline;
+    font-size: 2rem;
   }
+
+  .home-contact span {
+    font-size: 2.5rem;
+  }
+  
 
   /* Hero layout: photo background with text over the sketchbook page (right). */
   .home.has-hero {
@@ -89,12 +88,16 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
     width: 37%;
     margin-right: 3%;
     margin-top: 5%;
-    /* Text sits on the light photo, so keep it dark in both themes. */
     color: var(--indigo);
+    text-align: right;
   }
   .home.has-hero .home-intro,
   .home.has-hero .home-link {
     color: var(--indigo);
+  }
+
+  .home.has-hero .home-link:hover {
+    color: var(--cobalt-deep)
   }
 
   /* Mobile: drop the photo entirely and center the text. */
