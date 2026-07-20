@@ -26,6 +26,7 @@ const pages = defineCollection({
     templateKey: z.string().optional(),
     thumbnail: z.string().optional(),
     portrait: z.string().optional(),
+    background: z.string().optional(),
     instagram: z.string().optional(),
     email: z.string().optional(),
   }),

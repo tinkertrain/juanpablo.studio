@@ -122,7 +122,6 @@ body {
   margin: 3vw 0 1vw;
   text-align: center;
   color: var(--color-base);
-  opacity: 0.6;
   font-size: 1.3rem;
   line-height: 1.6;
 }
@@ -137,6 +136,9 @@ footer.site-foot a {
 
 .site-foot a {
   color: var(--color-base);
+}
+.site-foot a:hover {
+  color: var(--color-hover);
 }
 
 /* Site Navigation */
@@ -189,6 +191,12 @@ footer.site-foot a {
   font-variant: small-caps;
   letter-spacing: 1px;
   opacity: 0.6;
+}
+.site-head-logo:hover {
+  color: var(--color-hover);
+}
+.site-head-left a:hover {
+  color: var(--quin-rose);
 }
 
 .nav-current a,

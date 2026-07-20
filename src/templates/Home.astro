@@ -8,27 +8,31 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, portrait, instagram, email } = entry.data;
+const { title, background, instagram, email } = entry.data;
 
 const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
 ---
 
 <Layout title={title} description="Painter, urban sketcher, plein air artist">
-  <section class="home">
-    {portrait && <img class="home-portrait" src={portrait} alt={title} />}
-    <div class="home-intro"><Content /></div>
+  <section
+    class:list={['home', { 'has-hero': background }]}
+    style={background ? `--home-bg: url(${background})` : undefined}
+  >
+    <div class="home-content">
+      <div class="home-intro"><Content /></div>
 
-    <div class="home-contact">
-      {instagram && (
-        <a class="home-link" href={instagram} target="_blank" rel="noopener">
-          Instagram
-        </a>
-      )}
-      {encodedEmail && (
-        <a class="home-link" id="home-email" data-e={encodedEmail} href="#">
-          Email
-        </a>
-      )}
+      <div class="home-contact">
+        {instagram && (
+          <a class="home-link" href={instagram} target="_blank" rel="noopener">
+            Instagram
+          </a>
+        )}
+        {encodedEmail && (
+          <a class="home-link" id="home-email" data-e={encodedEmail} href="#">
+            Email
+          </a>
+        )}
+      </div>
     </div>
   </section>
 
@@ -49,13 +53,6 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
     max-width: var(--large);
     margin: 0 auto;
   }
-  .home-portrait {
-    width: 100%;
-    max-width: 320px;
-    border-radius: var(--radius);
-    display: block;
-    margin: 2rem 0;
-  }
   .home-intro {
     font-family: var(--font-serif);
     font-size: 1.9rem;
@@ -72,5 +69,58 @@ const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
     font-size: 1.6rem;
     color: var(--color-base);
     text-decoration: underline;
+  }
+
+  /* Hero layout: photo background with text over the sketchbook page (right). */
+  .home.has-hero {
+    max-width: none;
+    padding: 0;
+    min-height: 78vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background-image: var(--home-bg);
+    background-size: cover;
+    background-position: center;
+  }
+  .home.has-hero .home-content {
+    width: 37%;
+    margin-right: 3%;
+    margin-top: 5%;
+    /* Text sits on the light photo, so keep it dark in both themes. */
+    color: var(--indigo);
+  }
+  .home.has-hero .home-intro,
+  .home.has-hero .home-link {
+    color: var(--indigo);
+  }
+
+  /* Mobile: drop the photo entirely and center the text. */
+  @media (max-width: 850px) {
+    .home.has-hero {
+      min-height: 0;
+      display: block;
+      overflow: visible;
+      border-radius: 0;
+      padding: 0 var(--margin);
+      max-width: var(--large);
+      margin: 0 auto;
+      background-image: none;
+    }
+    .home.has-hero .home-content {
+      width: 100%;
+      margin-right: 0;
+      text-align: center;
+      color: var(--color-base);
+    }
+    .home.has-hero .home-intro,
+    .home.has-hero .home-link {
+      color: var(--color-base);
+    }
+    .home.has-hero .home-contact {
+      justify-content: center;
+    }
   }
 </style>

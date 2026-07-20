@@ -80,17 +80,17 @@ const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0
     margin-bottom: 2rem;
   }
   .gallery-chip {
-    padding: 0.6rem 1.2rem;
-    border: 1px solid var(--color-border);
-    border-radius: 2rem;
+    padding: 3px 30px;
+    border: 2px solid var(--color-chip-border);
+    border-radius: 40px;
     font-size: 1.5rem;
     text-decoration: none;
-    color: var(--color-base);
+    color: var(--color-chip-text);
   }
   .gallery-chip.is-active {
-    background: var(--color-base);
-    color: var(--color-bg);
-    border-color: var(--color-base);
+    background: var(--color-chip-bg-active);
+    color: var(--color-chip-text-active);
+    border-color: var(--color-chip-border-active);
   }
   .masonry {
     column-count: 3;
