@@ -10,19 +10,44 @@ import Footer from "../components/Footer.astro";
 export interface Props {
     title?: string;
     description?: string;
+    image?: string;
     children?: any;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image } = Astro.props;
+
+const pageTitle = title || "Juan Pablo";
+const pageDescription = description || "Painter, urban sketcher, plein air artist";
+// Social scrapers (WhatsApp, iMessage, Slack, Facebook) require an absolute URL.
+const ogImage = new URL(image || "/img/usk_bg.jpg", Astro.site).href;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content={description || "Painter, urban sketcher, plein air artist"} />
+        <meta name="description" content={pageDescription} />
         <meta name="viewport" content="width=device-width" />
+        <link rel="canonical" href={canonical} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Juan Pablo" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={ogImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={ogImage} />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="generator" content={Astro.generator} />
         <title>{title || "Juan Pablo"}</title>
         <ClientRouter />
