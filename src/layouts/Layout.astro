@@ -52,15 +52,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         <title>{title || "Juan Pablo"}</title>
         <ClientRouter />
         <script is:inline>
-            // Theme init
+            // Theme init. A saved choice wins; otherwise follow the OS
+            // preference. Runs before paint to avoid a flash of the wrong theme.
             const theme = (() => {
-                if (
+                const stored =
                     typeof localStorage !== "undefined" &&
-                    localStorage.getItem("theme")
-                ) {
-                    return localStorage.getItem("theme");
-                }
-                return "light";
+                    localStorage.getItem("theme");
+                if (stored) return stored;
+                return window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light";
             })();
             if (theme === "dark") {
                 document.documentElement.setAttribute("data-theme", "dark");
@@ -113,6 +114,22 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
                 };
 
                 updateIcon();
+
+                // Follow live OS theme changes until the user picks a theme.
+                window.matchMedia("(prefers-color-scheme: dark)").onchange = (
+                    e,
+                ) => {
+                    if (localStorage.getItem("theme")) return;
+                    if (e.matches) {
+                        document.documentElement.setAttribute(
+                            "data-theme",
+                            "dark",
+                        );
+                    } else {
+                        document.documentElement.removeAttribute("data-theme");
+                    }
+                    updateIcon();
+                };
 
                 if (toggleBtn) {
                     toggleBtn.addEventListener("click", () => {
