@@ -8,6 +8,12 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Deployment
+
+Cloudflare is set up to auto-deploy on push to `main`. Pushing (or merging a PR)
+ships the change to https://juanpablo.studio, so there is no need to run
+`npm run deploy` manually.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
