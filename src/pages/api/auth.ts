@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 // Server-rendered so it can read secrets and redirect at request time.
 export const prerender = false;
@@ -6,8 +7,8 @@ export const prerender = false;
 // Kicks off the GitHub OAuth flow for Decap CMS. Decap opens this endpoint
 // (base_url + auth_endpoint in config.yml); we bounce the user to GitHub's
 // authorize screen, which will call /api/callback when they approve.
-export const GET: APIRoute = ({ request, locals }) => {
-  const clientId = locals.runtime.env.GITHUB_CLIENT_ID;
+export const GET: APIRoute = ({ request }) => {
+  const clientId = env.GITHUB_CLIENT_ID;
   const { origin } = new URL(request.url);
 
   const authorize = new URL('https://github.com/login/oauth/authorize');

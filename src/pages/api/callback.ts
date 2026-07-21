@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
@@ -28,8 +29,7 @@ const htmlHeaders = { 'content-type': 'text/html;charset=UTF-8' };
 // GitHub redirects here with a `code` after the user authorizes. We exchange
 // it for an access token (using the client secret, server-side only) and pass
 // the token back to the CMS.
-export const GET: APIRoute = async ({ request, locals }) => {
-  const env = locals.runtime.env;
+export const GET: APIRoute = async ({ request }) => {
   const code = new URL(request.url).searchParams.get('code');
 
   try {
