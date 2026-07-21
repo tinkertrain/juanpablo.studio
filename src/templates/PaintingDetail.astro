@@ -63,11 +63,11 @@ const formattedDate = date
   <div class="lightbox" id="lightbox" hidden>
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
     {gallery.length > 1 && (
-      <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&larr;</button>
+      <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&lt;</button>
     )}
     <img class="lightbox-img" id="lightbox-img" src="" alt="" />
     {gallery.length > 1 && (
-      <button class="lightbox-next" id="lightbox-next" aria-label="Next">&rarr;</button>
+      <button class="lightbox-next" id="lightbox-next" aria-label="Next">&gt;</button>
     )}
   </div>
 
@@ -194,7 +194,7 @@ const formattedDate = date
   .lightbox {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
+    background: color-mix(in srgb, var(--indigo) 95%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,13 +204,37 @@ const formattedDate = date
   .lightbox-img { max-width: 90vw; max-height: 90vh; }
   .lightbox-close, .lightbox-prev, .lightbox-next {
     position: absolute;
-    background: none;
-    border: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    background: var(--quin-rose);
     color: #fff;
-    font-size: 4rem;
+    border: 0;
+    box-shadow: none;
+    border-radius: 15px;
+    font-size: 31px;
+    line-height: 1;
+    /* Marker glyphs sit low on the baseline; nudge them up to center. */
+    padding: 0 0 5px;
     cursor: pointer;
+    transition: background 0.15s ease;
   }
-  .lightbox-close { top: 1rem; right: 1.5rem; }
+  .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
+    background: color-mix(in srgb, var(--quin-rose) 82%, black);
+  }
+  .lightbox-prev, .lightbox-next {
+    width: 40px;
+    height: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lightbox-close {
+    width: 40px;
+    height: 40px;
+    top: 1rem;
+    right: 1.5rem;
+  }
   .lightbox-prev { left: 1.5rem; }
   .lightbox-next { right: 1.5rem; }
 </style>

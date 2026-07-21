@@ -115,6 +115,10 @@ const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0
     font-family: var(--font-serif);
     font-size: 1.6rem;
     color: var(--color-base);
+    transition: color 0.15s ease;
+  }
+  .masonry-item:hover .masonry-caption {
+    color: var(--quin-rose);
   }
   .gallery-empty {
     font-family: var(--font-serif);
