@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import type { CollectionEntry } from 'astro:content';
+import {
+  type Section,
+  categoryLabel,
+  categoryUrl,
+  sectionUrl,
+  paintingUrl,
+} from '../config/sections';
+
+interface Props {
+  section: Section;
+  paintings: CollectionEntry<'studio' | 'urban' | 'pleinair'>[];
+  categories: string[];
+  activeCategory: string | null;
+}
+
+const { section, paintings, categories, activeCategory } = Astro.props;
+
+const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0];
+---
+
+<Layout title={section.title} description={`${section.title} by the artist`}>
+  <section class="gallery">
+    <h1 class="gallery-title">{section.title}</h1>
+
+    {section.hasCategories && categories.length > 0 && (
+      <nav class="gallery-filters" aria-label="Filter by medium">
+        <a
+          href={sectionUrl(section)}
+          class={`gallery-chip ${activeCategory ? '' : 'is-active'}`}
+        >
+          All
+        </a>
+        {categories.map((cat) => (
+          <a
+            href={categoryUrl(section, cat)}
+            class={`gallery-chip ${activeCategory === cat ? 'is-active' : ''}`}
+          >
+            {categoryLabel(cat)}
+          </a>
+        ))}
+      </nav>
+    )}
+
+    {paintings.length === 0 ? (
+      <p class="gallery-empty">No pieces here yet.</p>
+    ) : (
+      <div class="masonry">
+        {paintings.map((p) => (
+          <a
+            class="masonry-item"
+            href={paintingUrl(section, p.id, p.data.category)}
+          >
+            <img src={thumb(p)} alt={p.data.title} loading="lazy" />
+            <span class="masonry-caption">{p.data.title}</span>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .gallery {
+    padding: 0 var(--margin);
+    max-width: var(--xlarge);
+    margin: 0 auto;
+  }
+  .gallery-title {
+    font-family: var(--font-serif);
+    font-size: 3.6rem;
+    margin: 2rem 0 1rem;
+  }
+  .gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .gallery-chip {
+    padding: 3px 30px;
+    border: 2px solid var(--color-chip-border);
+    border-radius: 40px;
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: var(--color-chip-text);
+  }
+  .gallery-chip.is-active {
+    background: var(--color-chip-bg-active);
+    color: var(--color-chip-text-active);
+    border-color: var(--color-chip-border-active);
+  }
+  .masonry {
+    column-count: 3;
+    column-gap: 1rem;
+  }
+  .masonry-item {
+    display: block;
+    position: relative;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    text-decoration: none;
+  }
+  .masonry-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius);
+  }
+  .masonry-caption {
+    display: block;
+    margin-top: 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    color: var(--color-base);
+  }
+  .gallery-empty {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--color-base);
+  }
+  @media (max-width: 980px) {
+    .masonry { column-count: 2; }
+  }
+  @media (max-width: 480px) {
+    .masonry { column-count: 1; }
+  }
+</style>

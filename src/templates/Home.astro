@@ -1,0 +1,146 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'pages'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, background, email } = entry.data;
+
+const encodedEmail = email ? Buffer.from(email).toString('base64') : null;
+---
+
+<Layout title={title} description="Painter, urban sketcher, plein air artist">
+  <section
+    class:list={['home', { 'has-hero': background }]}
+    style={background ? `--home-bg: url(${background})` : undefined}
+  >
+    <div class="home-content">
+      <div class="home-intro"><Content /></div>
+
+      <div class="home-contact">
+        {encodedEmail && (
+          <span>👋</span><a class="home-link" id="home-email" data-e={encodedEmail} href="#">
+            Email
+          </a>
+        )}
+      </div>
+    </div>
+
+    {background && <div class="home-hero-mobile" />}
+  </section>
+
+  <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      const el = document.getElementById('home-email');
+      if (!el) return;
+      const addr = atob(el.dataset.e);
+      el.href = 'mailto:' + addr;
+      el.textContent = addr;
+    });
+  </script>
+</Layout>
+
+<style>
+  .home {
+    padding: 0 var(--margin);
+    max-width: var(--large);
+    margin: 0 auto;
+  }
+  .home-intro {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .home-contact {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: flex-end;
+  }
+  .home-link {
+    text-decoration: underline;
+    font-size: 2rem;
+  }
+
+  .home-contact span {
+    font-size: 2.5rem;
+  }
+  
+
+  /* Hero layout: photo background with text over the sketchbook page (right). */
+  .home.has-hero {
+    max-width: none;
+    padding: 0;
+    min-height: 78vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background-image: var(--home-bg);
+    background-size: cover;
+    background-position: center;
+  }
+  .home.has-hero .home-content {
+    width: 37%;
+    margin-right: 3%;
+    margin-top: 5%;
+    color: var(--indigo);
+    text-align: right;
+  }
+  .home.has-hero .home-intro,
+  .home.has-hero .home-link {
+    color: var(--indigo);
+  }
+
+  .home.has-hero .home-link:hover {
+    color: var(--cobalt-deep)
+  }
+
+  /* Desktop shows the photo as the section background; the mobile strip is hidden. */
+  .home-hero-mobile {
+    display: none;
+  }
+
+  /* Mobile: move the photo below the text as a cropped strip that favors the
+     palette side and clips most of the empty sketchbook page. */
+  @media (max-width: 850px) {
+    .home.has-hero {
+      min-height: 0;
+      display: block;
+      overflow: visible;
+      border-radius: 0;
+      padding: 0 var(--margin);
+      max-width: var(--large);
+      margin: 0 auto;
+      background-image: none;
+    }
+    .home.has-hero .home-content {
+      width: 100%;
+      margin-right: 0;
+      text-align: center;
+      color: var(--color-base);
+    }
+    .home.has-hero .home-intro,
+    .home.has-hero .home-link {
+      color: var(--color-base);
+    }
+    .home.has-hero .home-contact {
+      justify-content: center;
+    }
+    .home.has-hero .home-hero-mobile {
+      display: block;
+      margin-top: 2rem;
+      height: 45vh;
+      border-radius: var(--radius);
+      background-image: var(--home-bg);
+      background-size: cover;
+      background-position: 0% 73%;
+    }
+  }
+</style>

@@ -1,10 +1,11 @@
 ---
-templateKey: index-page
-title: Clay Astro
-image: /img/clay-images-7.jpg
-description: A stunning Astro theme designed for captivating image-centric websites, perfect for photographers, portfolios, and blogs.
-thumbnail: /img/clay-images-7.jpg
-heading: Main Heading
-subheading: Sub HEading
-featuredimage: /img/clay-images-7.jpg
+templateKey: home
+title: Juan Pablo
+background: /img/usk_bg.jpg
+instagram: https://www.instagram.com/juanpablo_artista/
+email: hello@juanpablo.studio
 ---
+
+Hello! I'm an artist that travels the world
+<br>
+and paints it.

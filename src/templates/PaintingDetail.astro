@@ -1,0 +1,211 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { render, type CollectionEntry } from 'astro:content';
+import { type Section, sectionUrl, categoryLabel } from '../config/sections';
+
+interface Props {
+  section: Section;
+  painting: CollectionEntry<'studio' | 'urban' | 'pleinair'>;
+}
+
+const { section, painting } = Astro.props;
+const { Content } = await render(painting);
+const { title, date, location, medium, category, images } = painting.data;
+
+const formattedDate = date
+  ? new Intl.DateTimeFormat('en', { year: 'numeric', month: 'long' }).format(date)
+  : null;
+---
+
+<Layout title={title} description={medium || section.title}>
+  <article class="painting">
+    <a class="painting-back" href={sectionUrl(section)}>&larr; {section.title}</a>
+    <h1 class="painting-title">{title}</h1>
+
+    <div class="painting-layout">
+      <div class="painting-main">
+        {images[0] && (
+          <button class="painting-image" data-index={0} type="button">
+            <img src={images[0]} alt={title} />
+          </button>
+        )}
+      </div>
+
+      <div class="painting-info">
+        <ul class="painting-meta">
+          {medium && <li><strong>Medium:</strong> {medium}</li>}
+          {section.hasCategories && category && (
+            <li><strong>Category:</strong> {categoryLabel(category)}</li>
+          )}
+          {formattedDate && <li><strong>Date:</strong> {formattedDate}</li>}
+          {location && <li><strong>Location:</strong> {location}</li>}
+        </ul>
+        <div class="painting-body"><Content /></div>
+      </div>
+    </div>
+
+    {images.length > 1 && (
+      <div class="painting-more">
+        {images.slice(1).map((src, i) => (
+          <button class="painting-image" data-index={i + 1} type="button">
+            <img src={src} alt={`${title} (${i + 2})`} loading="lazy" />
+          </button>
+        ))}
+      </div>
+    )}
+  </article>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+    {images.length > 1 && (
+      <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&larr;</button>
+    )}
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+    {images.length > 1 && (
+      <button class="lightbox-next" id="lightbox-next" aria-label="Next">&rarr;</button>
+    )}
+  </div>
+
+  <script is:inline define:vars={{ images }}>
+    document.addEventListener('astro:page-load', () => {
+      const box = document.getElementById('lightbox');
+      if (!box) return;
+      const img = document.getElementById('lightbox-img');
+      let current = 0;
+
+      const show = (i) => {
+        current = (i + images.length) % images.length;
+        img.src = images[current];
+        box.hidden = false;
+      };
+      const hide = () => { box.hidden = true; };
+
+      document.querySelectorAll('.painting-image').forEach((btn) => {
+        btn.addEventListener('click', () => show(Number(btn.dataset.index)));
+      });
+      document.getElementById('lightbox-close').addEventListener('click', hide);
+      const prev = document.getElementById('lightbox-prev');
+      const next = document.getElementById('lightbox-next');
+      if (prev) prev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        show(current - 1);
+      });
+      if (next) next.addEventListener('click', (e) => {
+        e.stopPropagation();
+        show(current + 1);
+      });
+      box.addEventListener('click', (e) => { if (e.target === box) hide(); });
+
+      const onKey = (e) => {
+        if (box.hidden) return;
+        if (e.key === 'Escape') hide();
+        if (e.key === 'ArrowLeft') show(current - 1);
+        if (e.key === 'ArrowRight') show(current + 1);
+      };
+      // Remove any handler left by a previous page-load, then attach one.
+      document.removeEventListener('keydown', window.__pdKey || (() => {}));
+      window.__pdKey = onKey;
+      document.addEventListener('keydown', onKey);
+    });
+  </script>
+</Layout>
+
+<style>
+  .painting {
+    padding: 0 var(--margin);
+    max-width: var(--large);
+    margin: 0 auto;
+  }
+  .painting-back {
+    display: inline-block;
+    margin: 1.5rem 0;
+    font-family: var(--font-sans-serif);
+    font-size: 1.5rem;
+    color: var(--color-base);
+    text-decoration: none;
+  }
+  .painting-back:hover {
+    color: var(--color-hover);
+  }
+  .painting-title {
+    font-family: var(--font-serif);
+    font-size: 3.6rem;
+    margin: 0 0 2rem;
+  }
+  .painting-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 3rem;
+    align-items: start;
+  }
+  .painting-main {
+    position: sticky;
+    top: 2rem;
+  }
+  .painting-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: grid;
+    gap: 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 1.7rem;
+  }
+  .painting-body {
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    line-height: 1.6;
+  }
+  .painting-more {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  @media (max-width: 800px) {
+    .painting-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .painting-main {
+      position: static;
+    }
+  }
+  .painting-image {
+    display: block;
+    width: 100%;
+    height: fit-content;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+  .painting-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius);
+  }
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .lightbox[hidden] { display: none; }
+  .lightbox-img { max-width: 90vw; max-height: 90vh; }
+  .lightbox-close, .lightbox-prev, .lightbox-next {
+    position: absolute;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 4rem;
+    cursor: pointer;
+  }
+  .lightbox-close { top: 1rem; right: 1.5rem; }
+  .lightbox-prev { left: 1.5rem; }
+  .lightbox-next { right: 1.5rem; }
+</style>
