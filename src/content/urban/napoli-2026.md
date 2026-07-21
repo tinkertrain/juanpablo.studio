@@ -1,7 +1,7 @@
 ---
 title: Napoli 2026
 date: 2026-05-01
-location: Napoli
+location: Napoli, Italy
 medium: Ink, Watercolor, Water Soluble Graphite, Goauche
 cover: /img/jp_20260709_napoli.jpg
 ---
