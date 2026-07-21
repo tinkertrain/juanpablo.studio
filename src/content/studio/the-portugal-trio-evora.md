@@ -6,7 +6,6 @@ medium: Acrylics on wood panel
 category: acrylic
 cover: /img/Evora.jpg
 images:
-  - /img/Porto.jpg
-  - /img/Pinhao.jpg
+  - /img/trio_portugal.jpg
 ---
 I painted a set of 3 pictures from a trip I did to Portugal in June 2017, this is a view of the pretty town of Evora.
