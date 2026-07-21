@@ -8,7 +8,7 @@ const paintingSchema = z.object({
   location: z.string().optional(),
   medium: z.string().optional(),
   category: z.string().optional(),
-  cover: z.string().optional(),
+  cover: z.string(),
   images: z.array(z.string()).default([]),
 });
 
