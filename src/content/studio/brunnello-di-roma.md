@@ -11,4 +11,4 @@ images:
   - /img/brunello_03.jpg
   - /img/brunello_04.jpg
 ---
-This adorable guy founds us and kept following us when walking a on quiet neighborhood in Rome, I never painted an animal before but just look at him, how can you not? Capturing his personality wasn't that easy!
+This adorable guy found and kept following us when walking a on quiet neighborhood in Rome, I never painted an animal before but just look at him, how can you not? Capturing his personality wasn't that easy!
