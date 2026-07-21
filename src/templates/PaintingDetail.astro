@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { render, type CollectionEntry } from 'astro:content';
 import { type Section, sectionUrl, categoryLabel } from '../config/sections';
+import { ogImagePath } from '../utils/og';
 
 interface Props {
   section: Section;
@@ -21,7 +22,7 @@ const formattedDate = date
   : null;
 ---
 
-<Layout title={title} description={medium || section.title} image={cover}>
+<Layout title={title} description={medium || section.title} image={ogImagePath(cover)}>
   <article class="painting">
     <a class="painting-back" href={sectionUrl(section)}>&larr; {section.title}</a>
     <h1 class="painting-title">{title}</h1>
