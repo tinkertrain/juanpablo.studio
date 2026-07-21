@@ -1,7 +1,7 @@
 ---
 title: Giardini Margherita Sketchwalk
 date: 2026-03-29
-location: Bologna
+location: Bologna, Italy
 medium: Ink, Watercolor
 cover: /img/JP_20260709_Giardini_Marguerita_02 .jpg
 images:
