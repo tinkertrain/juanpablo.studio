@@ -1,9 +1,13 @@
 ---
-title: Afternoon in Bukchon
-date: 2020-04-20
-location: Seoul, South Korea
-medium: Watercolor on 100% cotton paper
-category: watercolor
-cover: /img/Seoul.jpg
+title: Carcassonne
+date: 2020-05-24
+location: Carcassonne, France
+medium: Oil on cotton canvas
+category: oil
+cover: /img/carcassonne_cover.jpg
+images:
+  - /img/carcassonne_01.jpg
+  - /img/carcassonne_02.jpg
+  - /img/carcassonne_03.jpg
 ---
-Walking among the Hanok in the Bukchon neighbourhood of Seoul, here we find Heather, bathed by the afternoon light.
+Gorgeous light sweeping in the distance, together with the beauty of Carcassonne inspire me to paint it.
