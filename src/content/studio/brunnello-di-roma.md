@@ -11,4 +11,4 @@ images:
   - /img/brunello_03.jpg
   - /img/brunello_04.jpg
 ---
-This adorable guy found and kept following us when walking a on quiet neighborhood in Rome, I never painted an animal before but just look at him, how can you not? Capturing his personality wasn't that easy!
+This adorable guy found and kept following us when walking a on quiet neighbourhood in Rome, I never painted a cat (or any other animal) before but just look at him, how can you not? We took up on ourselves and named him Brunello. Capturing Brunello's personality wasn't that easy! And leaving him there either.
