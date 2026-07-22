@@ -9,6 +9,7 @@
     "astro": "astro",
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
+    "compress": "node scripts/compress-images.mjs",
     "test": "vitest run"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "postcss-easy-import": "^4.0.0"
   },
   "devDependencies": {
+    "sharp": "^0.35.3",
     "vitest": "^4.1.10",
     "wrangler": "^4.110.0"
   }

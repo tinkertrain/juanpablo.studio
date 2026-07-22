@@ -1,3 +1,6 @@
+# original / uncompressed source images (fed to npm run compress)
+raw-images/
+
 # build output
 dist/
 # generated types
