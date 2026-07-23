@@ -2,8 +2,8 @@
 title: "The Japan Trio: Kumano Kodo"
 date: 2022-01-31
 location: Wakayama, Japan
-medium: Water Soluble Graphite 100% cotton paper
-category: other
+medium: Watercolor 100% cotton paper
+category: watercolor
 cover: /img/japan_trio_kumano.jpg
 images:
   - /img/japan_trio.jpg
