@@ -1,7 +1,7 @@
 ---
-title: Picnic in Giardino Margherita
+title: Picnic in Giardini Margherita
 date: 2026-06-16
-location: Giardino Margherita, Bologna
+location: Giardini Margherita, Bologna
 medium: Watercolor, Ink, grey toned sketchbook
 cover: /img/picnic_margherita.jpg
 ---
