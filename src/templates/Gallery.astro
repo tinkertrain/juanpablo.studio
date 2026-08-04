@@ -3,15 +3,17 @@ import Layout from '../layouts/Layout.astro';
 import type { CollectionEntry } from 'astro:content';
 import {
   type Section,
+  type PaintingCollection,
   categoryLabel,
   categoryUrl,
   sectionUrl,
   paintingUrl,
+  sectionForCollection,
 } from '../config/sections';
 
 interface Props {
   section: Section;
-  paintings: CollectionEntry<'studio' | 'urban' | 'pleinair'>[];
+  paintings: CollectionEntry<PaintingCollection>[];
   categories: string[];
   activeCategory: string | null;
 }
@@ -19,6 +21,12 @@ interface Props {
 const { section, paintings, categories, activeCategory } = Astro.props;
 
 const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0];
+
+// A cross-listed piece links to its home section, where its page actually is.
+const href = (p: Props['paintings'][number]) => {
+  const home = sectionForCollection(p.collection) ?? section;
+  return paintingUrl(home, p.id, p.data.category);
+};
 ---
 
 <Layout title={section.title} description={`${section.title} by the artist`}>
@@ -49,10 +57,7 @@ const thumb = (p: Props['paintings'][number]) => p.data.cover || p.data.images[0
     ) : (
       <div class="masonry">
         {paintings.map((p) => (
-          <a
-            class="masonry-item"
-            href={paintingUrl(section, p.id, p.data.category)}
-          >
+          <a class="masonry-item" href={href(p)}>
             <img src={thumb(p)} alt={p.data.title} loading="lazy" />
             <span class="masonry-caption">{p.data.title}</span>
           </a>

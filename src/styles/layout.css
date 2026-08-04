@@ -196,9 +196,19 @@ footer.site-foot a {
   color: var(--quin-rose);
 }
 
-.nav-current a,
 .site-head a:hover {
   text-decoration: none;
+}
+
+/*
+ * Current section. Uses the nav hover colour, which reads on both the light
+ * and the dark background, unlike --color-hover.
+ */
+.site-head .nav-current a {
+  color: var(--quin-rose);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 .site-head-center {
@@ -414,9 +424,6 @@ footer.site-foot a {
       transform 0.6s cubic-bezier(0.4, 0.01, 0.165, 0.99),
       opacity 0.9s cubic-bezier(0.4, 0.01, 0.165, 0.99);
     transform: scale(1) translateY(0px);
-  }
-  .site-head-open .nav-current a {
-    border-bottom: var(--color-base) 2px solid;
   }
   .site-head-open .site-foot {
     display: block;

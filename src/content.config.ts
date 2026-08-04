@@ -1,6 +1,10 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import { SECTION_SLUGS } from './config/sections';
+
+// A typo here should fail the build, not silently drop the cross-listing.
+const sectionSlug = z.enum(SECTION_SLUGS as [string, ...string[]]);
 
 const paintingSchema = z.object({
   title: z.string(),
@@ -10,6 +14,8 @@ const paintingSchema = z.object({
   width: z.coerce.number().positive().optional(),
   height: z.coerce.number().positive().optional(),
   category: z.string().optional(),
+  // Extra sections this piece appears in, on top of its own.
+  alsoIn: z.array(sectionSlug).default([]),
   cover: z.string(),
   images: z.array(z.string()).default([]),
 });
@@ -38,5 +44,6 @@ export const collections = {
   studio: painting('studio'),
   urban: painting('urban'),
   pleinair: painting('pleinair'),
+  artifacts: painting('artifacts'),
   pages,
 };

@@ -39,6 +39,20 @@ collections:
       - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
       - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
       - {
+          label: "Also show in",
+          name: "alsoIn",
+          widget: "select",
+          multiple: true,
+          required: false,
+          hint: "Extra sections this piece appears in. It keeps one page, in its own section.",
+          options:
+            [
+              { label: "Urban Sketching", value: "urban-sketching" },
+              { label: "Plein Air", value: "plein-air" },
+              { label: "Artifacts", value: "artifacts" },
+            ],
+        }
+      - {
           label: "Category",
           name: "category",
           widget: "select",
@@ -80,6 +94,20 @@ collections:
       - { label: "Medium", name: "medium", widget: "string", required: false }
       - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
       - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
+      - {
+          label: "Also show in",
+          name: "alsoIn",
+          widget: "select",
+          multiple: true,
+          required: false,
+          hint: "Extra sections this piece appears in. It keeps one page, in its own section.",
+          options:
+            [
+              { label: "Studio Paintings", value: "studio-paintings" },
+              { label: "Plein Air", value: "plein-air" },
+              { label: "Artifacts", value: "artifacts" },
+            ],
+        }
       - { label: "Cover image", name: "cover", widget: "image", choose_url: false }
       - {
           label: "Images",
@@ -108,6 +136,62 @@ collections:
       - { label: "Medium", name: "medium", widget: "string", required: false }
       - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
       - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
+      - {
+          label: "Also show in",
+          name: "alsoIn",
+          widget: "select",
+          multiple: true,
+          required: false,
+          hint: "Extra sections this piece appears in. It keeps one page, in its own section.",
+          options:
+            [
+              { label: "Studio Paintings", value: "studio-paintings" },
+              { label: "Urban Sketching", value: "urban-sketching" },
+              { label: "Artifacts", value: "artifacts" },
+            ],
+        }
+      - { label: "Cover image", name: "cover", widget: "image", choose_url: false }
+      - {
+          label: "Images",
+          name: "images",
+          widget: "list",
+          field: { label: "Image", name: "image", widget: "image", choose_url: false },
+        }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "artifacts"
+    label: "Artifacts"
+    folder: "src/content/artifacts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - {
+          label: "Date",
+          name: "date",
+          widget: "datetime",
+          date_format: "DD/MM/YYYY",
+          time_format: false,
+          format: "YYYY-MM-DD",
+        }
+      - { label: "Location", name: "location", widget: "string", required: false }
+      - { label: "Medium", name: "medium", widget: "string", required: false }
+      - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
+      - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
+      - {
+          label: "Also show in",
+          name: "alsoIn",
+          widget: "select",
+          multiple: true,
+          required: false,
+          hint: "Extra sections this piece appears in. It keeps one page, in its own section.",
+          options:
+            [
+              { label: "Studio Paintings", value: "studio-paintings" },
+              { label: "Urban Sketching", value: "urban-sketching" },
+              { label: "Plein Air", value: "plein-air" },
+            ],
+        }
       - { label: "Cover image", name: "cover", widget: "image", choose_url: false }
       - {
           label: "Images",

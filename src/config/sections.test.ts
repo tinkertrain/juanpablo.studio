@@ -8,18 +8,28 @@ import {
   paintingUrl,
   filterPaintings,
   availableCategories,
+  SECTION_SLUGS,
+  sectionForCollection,
+  sectionFromPath,
+  crossListedInto,
 } from './sections';
 
 const studio = getSectionBySlug('studio-paintings')!;
 const urban = getSectionBySlug('urban-sketching')!;
+const artifacts = getSectionBySlug('artifacts')!;
 
 describe('sections config', () => {
-  it('defines exactly three sections', () => {
+  it('defines exactly four sections', () => {
     expect(SECTIONS.map((s) => s.slug)).toEqual([
       'studio-paintings',
       'urban-sketching',
       'plein-air',
+      'artifacts',
     ]);
+  });
+
+  it('exposes every slug as a cross-listing target', () => {
+    expect(SECTION_SLUGS).toEqual(SECTIONS.map((s) => s.slug));
   });
 
   it('only studio has categories', () => {
@@ -27,6 +37,21 @@ describe('sections config', () => {
     expect(studio.categories).toContain('mixed-media');
     expect(urban.hasCategories).toBe(false);
     expect(urban.categories).toEqual([]);
+    expect(artifacts.hasCategories).toBe(false);
+    expect(artifacts.categories).toEqual([]);
+  });
+
+  it('builds flat artifact URLs', () => {
+    expect(sectionUrl(artifacts)).toBe('/artifacts');
+    expect(paintingUrl(artifacts, 'painted-lampshade')).toBe(
+      '/artifacts/painted-lampshade',
+    );
+  });
+
+  it('maps a collection back to its section', () => {
+    expect(sectionForCollection('artifacts')).toBe(artifacts);
+    expect(sectionForCollection('pleinair')?.slug).toBe('plein-air');
+    expect(sectionForCollection('nope')).toBeUndefined();
   });
 
   it('looks up sections by slug', () => {
@@ -86,5 +111,45 @@ describe('sections config', () => {
   it('returns no categories when nothing matches the defined list', () => {
     const items = [{ data: {} }, { data: { category: 'pastel' } }];
     expect(availableCategories(studio, items)).toEqual([]);
+  });
+});
+
+describe('sectionFromPath', () => {
+  it('matches a section index, with or without a trailing slash', () => {
+    expect(sectionFromPath('/plein-air')).toBe(getSectionBySlug('plein-air'));
+    expect(sectionFromPath('/plein-air/')).toBe(getSectionBySlug('plein-air'));
+  });
+
+  it('matches pages nested under a section', () => {
+    expect(sectionFromPath('/studio-paintings/oil')).toBe(studio);
+    expect(sectionFromPath('/studio-paintings/oil/misty-morning')).toBe(studio);
+    expect(sectionFromPath('/artifacts/painted-lampshade')).toBe(artifacts);
+  });
+
+  it('matches nothing outside the sections', () => {
+    expect(sectionFromPath('/')).toBeUndefined();
+    expect(sectionFromPath('/about')).toBeUndefined();
+    expect(sectionFromPath('/oil/studio-paintings')).toBeUndefined();
+  });
+});
+
+describe('cross-listing', () => {
+  const scroll = { collection: 'studio', data: { alsoIn: ['artifacts'] } };
+  const lamp = { collection: 'artifacts', data: { alsoIn: [] } };
+  const sketch = { collection: 'urban', data: {} };
+  const all = [scroll, lamp, sketch];
+
+  it('pulls in pieces that ask for this section', () => {
+    expect(crossListedInto(artifacts, all)).toEqual([scroll]);
+  });
+
+  it('never pulls in a piece from the section itself', () => {
+    const homebound = { collection: 'artifacts', data: { alsoIn: ['artifacts'] } };
+    expect(crossListedInto(artifacts, [homebound])).toEqual([]);
+  });
+
+  it('ignores pieces with no cross-listing at all', () => {
+    expect(crossListedInto(studio, all)).toEqual([]);
+    expect(crossListedInto(urban, all)).toEqual([]);
   });
 });

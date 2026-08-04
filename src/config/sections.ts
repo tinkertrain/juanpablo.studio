@@ -1,6 +1,9 @@
+/** Every content collection that holds a piece of work. */
+export type PaintingCollection = 'studio' | 'urban' | 'pleinair' | 'artifacts';
+
 export type Section = {
   slug: string;
-  collection: 'studio' | 'urban' | 'pleinair';
+  collection: PaintingCollection;
   title: string;
   hasCategories: boolean;
   categories: string[];
@@ -28,10 +31,51 @@ export const SECTIONS: Section[] = [
     hasCategories: false,
     categories: [],
   },
+  {
+    slug: 'artifacts',
+    collection: 'artifacts',
+    title: 'Artifacts',
+    hasCategories: false,
+    categories: [],
+  },
 ];
+
+/** Slugs a piece may cross-list itself into via `alsoIn`. */
+export const SECTION_SLUGS = SECTIONS.map((s) => s.slug);
 
 export function getSectionBySlug(slug: string): Section | undefined {
   return SECTIONS.find((s) => s.slug === slug);
+}
+
+/**
+ * The section a URL belongs to, matching a section index and everything under
+ * it (`/plein-air`, `/plein-air/selles-sur-cher`). Used to mark the nav.
+ */
+export function sectionFromPath(pathname: string): Section | undefined {
+  const [first] = pathname.split('/').filter(Boolean);
+  return first ? getSectionBySlug(first) : undefined;
+}
+
+/**
+ * The section a piece lives in, derived from its collection. A cross-listed
+ * piece keeps this as its home, so it always links to its one canonical page.
+ */
+export function sectionForCollection(collection: string): Section | undefined {
+  return SECTIONS.find((s) => s.collection === collection);
+}
+
+/**
+ * Pieces from other collections that ask to appear in this section via
+ * `alsoIn`. They are shown in the gallery but keep their canonical detail page.
+ */
+export function crossListedInto<
+  T extends { collection: string; data: { alsoIn?: string[] } },
+>(section: Section, all: T[]): T[] {
+  return all.filter(
+    (entry) =>
+      entry.collection !== section.collection &&
+      (entry.data.alsoIn ?? []).includes(section.slug),
+  );
 }
 
 export function categoryLabel(category: string): string {

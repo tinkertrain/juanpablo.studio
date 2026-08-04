@@ -1,8 +1,12 @@
 ---
 import { getEntry } from 'astro:content';
+import { SECTIONS, sectionUrl, sectionFromPath } from '../config/sections';
 
 const home = await getEntry('pages', 'index');
 const instagram = home?.data.instagram;
+
+// Marks the section we are in, including its category and detail pages.
+const current = sectionFromPath(Astro.url.pathname);
 ---
 <header class="site-head">
     <div class="site-head-container">
@@ -15,15 +19,16 @@ const instagram = home?.data.instagram;
         </a>
         <nav class="site-head-left">
             <ul class="nav" role="menu">
-                <li class="nav-home" role="menuitem">
-                    <a href="/studio-paintings">Studio Paintings</a>
-                </li>
-                <li class="nav-home" role="menuitem">
-                    <a href="/urban-sketching">Urban Sketching</a>
-                </li>
-                <li class="nav-home" role="menuitem">
-                    <a href="/plein-air">Plein Air</a>
-                </li>
+                {SECTIONS.map((section) => {
+                    const isCurrent = current?.slug === section.slug;
+                    return (
+                        <li class:list={['nav-home', { 'nav-current': isCurrent }]} role="menuitem">
+                            <a href={sectionUrl(section)} aria-current={isCurrent ? 'page' : undefined}>
+                                {section.title}
+                            </a>
+                        </li>
+                    );
+                })}
             </ul>
         </nav>
         <div class="site-head-center">

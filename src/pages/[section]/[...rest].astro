@@ -4,11 +4,13 @@ import Gallery from '../../templates/Gallery.astro';
 import PaintingDetail from '../../templates/PaintingDetail.astro';
 import {
   SECTIONS,
+  type PaintingCollection,
   filterPaintings,
   availableCategories,
+  crossListedInto,
 } from '../../config/sections';
 
-type Painting = CollectionEntry<'studio' | 'urban' | 'pleinair'>;
+type Painting = CollectionEntry<PaintingCollection>;
 
 export async function getStaticPaths() {
   const byDateDesc = (a: Painting, b: Painting) =>
@@ -16,10 +18,21 @@ export async function getStaticPaths() {
 
   const paths: any[] = [];
 
+  // Every piece, so a section's gallery can pick up cross-listed ones.
+  const everything = (
+    await Promise.all(
+      SECTIONS.map((s) => getCollection(s.collection) as Promise<Painting[]>),
+    )
+  ).flat();
+
   for (const section of SECTIONS) {
-    const paintings = (
-      (await getCollection(section.collection)) as Painting[]
-    ).sort(byDateDesc);
+    const own = everything.filter((p) => p.collection === section.collection);
+
+    // Guests show in the gallery; only `own` gets a detail page, so a
+    // cross-listed piece keeps exactly one canonical URL.
+    const paintings = [...own, ...crossListedInto(section, everything)].sort(
+      byDateDesc,
+    );
 
     // Only offer filters for mediums that actually have paintings.
     const categories = availableCategories(section, paintings);
@@ -51,7 +64,7 @@ export async function getStaticPaths() {
     }
 
     // Painting details
-    for (const painting of paintings) {
+    for (const painting of own) {
       const rest =
         section.hasCategories && painting.data.category
           ? `${painting.data.category}/${painting.id}`

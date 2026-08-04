@@ -1,13 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { render, type CollectionEntry } from 'astro:content';
-import { type Section, sectionUrl, categoryLabel } from '../config/sections';
+import {
+  type Section,
+  type PaintingCollection,
+  sectionUrl,
+  categoryLabel,
+} from '../config/sections';
 import { ogImagePath } from '../utils/og';
 import { formatSize } from '../utils/size';
 
 interface Props {
   section: Section;
-  painting: CollectionEntry<'studio' | 'urban' | 'pleinair'>;
+  painting: CollectionEntry<PaintingCollection>;
 }
 
 const { section, painting } = Astro.props;

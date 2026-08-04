@@ -4,6 +4,8 @@ date: 2025-06-15
 location: Bologna, Italy
 medium: Watercolor on 100% hot press paper, linen, fabric, washi tape
 category: watercolor
+alsoIn:
+  - artifacts
 cover: /img/Scroll_02.jpg
 images:
   - /img/Scroll_01.jpg
