@@ -4,7 +4,6 @@ import { render, type CollectionEntry } from 'astro:content';
 import {
   type Section,
   type PaintingCollection,
-  sectionUrl,
   categoryLabel,
 } from '../config/sections';
 import { ogImagePath } from '../utils/og';
@@ -32,7 +31,6 @@ const formattedDate = date
 
 <Layout title={title} description={medium || section.title} image={ogImagePath(cover)}>
   <article class="painting">
-    <a class="painting-back" href={sectionUrl(section)}>&larr; {section.title}</a>
     <h1 class="painting-title">{title}</h1>
 
     <div class="painting-layout">
@@ -130,21 +128,11 @@ const formattedDate = date
     max-width: var(--large);
     margin: 0 auto;
   }
-  .painting-back {
-    display: inline-block;
-    margin: 1.5rem 0;
-    font-family: var(--font-sans-serif);
-    font-size: 1.5rem;
-    color: var(--color-base);
-    text-decoration: none;
-  }
-  .painting-back:hover {
-    color: var(--color-hover);
-  }
   .painting-title {
     font-family: var(--font-serif);
     font-size: 3.6rem;
-    margin: 0 0 2rem;
+    /* Matches the gallery title, now that no back link sits above it. */
+    margin: 2rem 0;
   }
   .painting-layout {
     display: grid;
