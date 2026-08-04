@@ -36,6 +36,8 @@ collections:
         }
       - { label: "Location", name: "location", widget: "string", required: false }
       - { label: "Medium", name: "medium", widget: "string", required: false }
+      - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
+      - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
       - {
           label: "Category",
           name: "category",
@@ -76,6 +78,8 @@ collections:
         }
       - { label: "Location", name: "location", widget: "string", required: false }
       - { label: "Medium", name: "medium", widget: "string", required: false }
+      - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
+      - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
       - { label: "Cover image", name: "cover", widget: "image", choose_url: false }
       - {
           label: "Images",
@@ -102,6 +106,8 @@ collections:
         }
       - { label: "Location", name: "location", widget: "string", required: false }
       - { label: "Medium", name: "medium", widget: "string", required: false }
+      - { label: "Width (cm)", name: "width", widget: "number", value_type: "float", min: 0, required: false }
+      - { label: "Height (cm)", name: "height", widget: "number", value_type: "float", min: 0, required: false }
       - { label: "Cover image", name: "cover", widget: "image", choose_url: false }
       - {
           label: "Images",

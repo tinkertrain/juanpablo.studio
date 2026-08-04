@@ -7,6 +7,8 @@ const paintingSchema = z.object({
   date: z.coerce.date().optional(),
   location: z.string().optional(),
   medium: z.string().optional(),
+  width: z.coerce.number().positive().optional(),
+  height: z.coerce.number().positive().optional(),
   category: z.string().optional(),
   cover: z.string(),
   images: z.array(z.string()).default([]),

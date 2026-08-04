@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { render, type CollectionEntry } from 'astro:content';
 import { type Section, sectionUrl, categoryLabel } from '../config/sections';
 import { ogImagePath } from '../utils/og';
+import { formatSize } from '../utils/size';
 
 interface Props {
   section: Section;
@@ -11,7 +12,9 @@ interface Props {
 
 const { section, painting } = Astro.props;
 const { Content } = await render(painting);
-const { title, date, location, medium, category, cover, images } = painting.data;
+const { title, date, location, medium, width, height, category, cover, images } = painting.data;
+
+const size = formatSize(width, height);
 
 // The cover doubles as the main image so it never has to be entered twice.
 // Drop it from `images` if it was also listed there, to avoid a duplicate.
@@ -39,6 +42,7 @@ const formattedDate = date
       <div class="painting-info">
         <ul class="painting-meta">
           {medium && <li><strong>Medium:</strong> {medium}</li>}
+          {size && <li><strong>Size:</strong> {size}</li>}
           {section.hasCategories && category && (
             <li><strong>Category:</strong> {categoryLabel(category)}</li>
           )}
