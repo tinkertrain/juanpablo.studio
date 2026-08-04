@@ -288,15 +288,24 @@ footer.site-foot a {
   position: absolute;
   left: 0;
   z-index: 9999;
-  padding: 12px 12px 12px 12px;
+  /* Colour lives here, not in hamburger.css, so it tracks the theme. */
+  color: var(--color-base);
 }
 
 @media (max-width: 850px) {
   .site-head {
     padding: 0;
   }
+  /* Centred in the 80px bar, with a 44px tap target. */
   .nav-burger {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 18px;
+    left: 4px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
   }
   .site-head-container {
     flex-direction: column;
@@ -351,6 +360,9 @@ footer.site-foot a {
     z-index: auto;
     display: flex;
     justify-content: center;
+    /* Keep the centred logo clear of the burger on both sides. */
+    padding: 0 52px;
+    margin-right: 0;
   }
   .site-head-right {
     order: 3;
@@ -363,12 +375,16 @@ footer.site-foot a {
   }
 
   .site-head-logo {
-    font-size: 2rem;
+    font-size: 1.8rem;
     letter-spacing: 1px;
     text-align: center;
     max-width: none;
     line-height: 0.9;
     white-space: nowrap;
+  }
+
+  .logo-lead {
+    font-size: 3.1rem;
   }
 
   .site-head-open {

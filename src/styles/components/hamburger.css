@@ -1,9 +1,17 @@
 /* https://github.com/jonsuh/hamburgers */
+
+/*
+ * The bars use `currentColor` on purpose. This file is inlined into
+ * content.css, where postcss-custom-properties runs with `preserve: false`
+ * and flattens every var() to its :root value, so a `var(--color-base)` here
+ * would be frozen to the light-mode colour and vanish in dark mode. The colour
+ * comes from `.nav-burger` in layout.css instead, which keeps its var().
+ */
 .hamburger {
     display: flex;
     overflow: visible;
     margin: 0;
-    padding: 2px 0;
+    padding: 0;
     border: 0;
     color: inherit;
     font: inherit;
@@ -15,26 +23,23 @@
 
 .hamburger-box {
     position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 13px;
+    display: block;
+    width: 22px;
+    height: 16px;
 }
 
 .hamburger-inner {
-    top: 50%;
     display: block;
-    margin-top: -2px;
-    height: 2px;
 }
 
 .hamburger-inner,
 .hamburger-inner::before,
 .hamburger-inner::after {
     position: absolute;
-    width: 20px;
-    height: 1px;
-    background-color: var(--color-base);
-    border-radius: 4px;
+    width: 22px;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 2px;
     transition: transform 0.15s ease;
 }
 .hamburger-inner::before,
@@ -43,10 +48,10 @@
     display: block;
 }
 .hamburger-inner::before {
-    top: -6px;
+    top: -7px;
 }
 .hamburger-inner::after {
-    bottom: -6px;
+    bottom: -7px;
 }
 
 /*
@@ -60,7 +65,7 @@
     transition-duration: 0.15s;
 }
 .hamburger--collapse .hamburger-inner::after {
-    top: -12px;
+    top: -14px;
     transition: top 0.3s 0.3s cubic-bezier(0.33333, 0.66667, 0.66667, 1),
     opacity 0.1s linear;
 }
@@ -69,16 +74,10 @@
     transform 0.15s cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
 
-.site-head-open .hamburger-inner,
-.site-head-open .hamburger-inner::before,
-.site-head-open .hamburger-inner::after {
-    background-color: var(--color-base);
-}
-
 .site-head-open .hamburger-inner {
     transition-delay: 0.32s;
     transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translate3d(0, -6px, 0) rotate(-45deg);
+    transform: translate3d(0, -7px, 0) rotate(-45deg);
 }
 
 .site-head-open .hamburger-inner::after {
