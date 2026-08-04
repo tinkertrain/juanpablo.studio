@@ -3,6 +3,8 @@ title: Dia invernal en el Passeig del Born
 date: 2021-09-10
 location: Barcelona, Spain
 medium: Oil on cotton canvas
+width: 180
+height: 130
 category: oil
 cover: /img/born_cover.jpg
 images:
