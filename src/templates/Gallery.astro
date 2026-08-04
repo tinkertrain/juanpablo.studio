@@ -59,7 +59,6 @@ const href = (p: Props['paintings'][number]) => {
         {paintings.map((p) => (
           <a class="masonry-item" href={href(p)}>
             <img src={thumb(p)} alt={p.data.title} loading="lazy" />
-            <span class="masonry-caption">{p.data.title}</span>
           </a>
         ))}
       </div>
@@ -76,13 +75,13 @@ const href = (p: Props['paintings'][number]) => {
   .gallery-title {
     font-family: var(--font-serif);
     font-size: 3.6rem;
-    margin: 2rem 0 1rem;
+    margin: 2rem 0 4rem;
   }
   .gallery-filters {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 4rem;
   }
   .gallery-chip {
     padding: 3px 30px;
@@ -113,17 +112,6 @@ const href = (p: Props['paintings'][number]) => {
     height: auto;
     display: block;
     border-radius: var(--radius);
-  }
-  .masonry-caption {
-    display: block;
-    margin-top: 0.6rem;
-    font-family: var(--font-serif);
-    font-size: 1.6rem;
-    color: var(--color-base);
-    transition: color 0.15s ease;
-  }
-  .masonry-item:hover .masonry-caption {
-    color: var(--quin-rose);
   }
   .gallery-empty {
     font-family: var(--font-serif);
