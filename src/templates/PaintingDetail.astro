@@ -46,9 +46,6 @@ const formattedDate = date
         <ul class="painting-meta">
           {medium && <li><strong>Medium:</strong> {medium}</li>}
           {size && <li><strong>Size:</strong> {size}</li>}
-          {section.hasCategories && category && (
-            <li><strong>Category:</strong> {categoryLabel(category)}</li>
-          )}
           {formattedDate && <li><strong>Date:</strong> {formattedDate}</li>}
           {location && <li><strong>Location:</strong> {location}</li>}
         </ul>
@@ -152,6 +149,11 @@ const formattedDate = date
     gap: 0.5rem;
     font-family: var(--font-serif);
     font-size: 1.7rem;
+  }
+  .painting-meta li {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
   }
   .painting-body {
     font-family: var(--font-serif);
