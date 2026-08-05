@@ -1,5 +1,5 @@
 ---
-title: Puglia sketches
+title: "Puglia sketches: Pepeturro"
 date: 2025-09-23
 location: Puglia, Italy
 medium: Acrylic Markers, Water soluble Graphite, Pencil, Ink
