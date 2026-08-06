@@ -159,21 +159,19 @@ const multiple = images.length > 1;
     document.getElementById('lightbox-prev')?.addEventListener('click', step(-1), { signal });
     document.getElementById('lightbox-next')?.addEventListener('click', step(1), { signal });
 
-    // The zoom-in cursor on the image has to mean something, so a click on the
-    // art steps the zoom in around the point clicked, just as the + button does.
-    // Only the backdrop closes, and only at fit; once zoomed the surface belongs
-    // to dragging instead.
+    // Clicking the artwork does nothing; zooming is the buttons' job. Only the
+    // backdrop closes, and only at fit, since once zoomed the surface belongs to
+    // dragging instead.
+    //
+    // This reads `pressedBackdrop` rather than the event's own target because the
+    // target cannot be trusted here: setPointerCapture below retargets pointerup
+    // and click to the stage, so a click on the image arrives claiming to be a
+    // backdrop click and would close the lightbox under the user's cursor.
     box.addEventListener(
       'click',
-      (event) => {
+      () => {
         if (moved) return; // that was a pan, not a click
-        if (event.target === img) {
-          // zoomTo stops at the ceiling, which is what makes this go inert there
-          // rather than falling through to something surprising.
-          zoomTo(scale * ZOOM_STEP, focusFrom(event.clientX, event.clientY));
-        } else if (event.target === box && !zoomed()) {
-          close();
-        }
+        if (pressedBackdrop && !zoomed()) close();
       },
       { signal }
     );
@@ -196,6 +194,8 @@ const multiple = images.length > 1;
     /** Where the press began, and whether it travelled far enough to be a drag. */
     let press: Point | null = null;
     let moved = false;
+    /** Whether the press landed on the backdrop rather than the artwork. */
+    let pressedBackdrop = false;
 
     const spread = () => {
       const [a, b] = [...pointers.values()];
@@ -209,7 +209,11 @@ const multiple = images.length > 1;
     box.addEventListener(
       'pointerdown',
       (event) => {
-        if ((event.target as HTMLElement).closest('button')) return;
+        const onButton = !!(event.target as HTMLElement).closest('button');
+        // pointerdown is the last event in the sequence whose target is still the
+        // element actually under the pointer, so the decision has to be made here.
+        pressedBackdrop = !onButton && event.target === box;
+        if (onButton) return;
         if (event.pointerType === 'mouse' && event.button !== 0) return;
 
         pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -354,7 +358,6 @@ const multiple = images.length > 1;
     will-change: transform;
     user-select: none;
     -webkit-user-drag: none;
-    cursor: zoom-in;
     transition: transform 0.18s ease;
   }
   .lightbox.is-zoomed .lightbox-img {
