@@ -6,6 +6,6 @@ medium: Gouache on 100% cold press cotton paper
 width: 23
 height: 30.5
 category: gouache
-cover: /img/JP_20260714_Venice.jpg
+cover: /src/assets/img/JP_20260714_Venice.jpg
 ---
 Venezia.... a painter rite of passage of sorts?

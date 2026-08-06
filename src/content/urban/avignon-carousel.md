@@ -3,6 +3,6 @@ title: Avignon carousel
 date: 2022-09-10
 location: Avignon, France
 medium: Goauche
-cover: /img/avignon.jpg
+cover: /src/assets/img/avignon.jpg
 ---
 Buzzy afternoon in Avignon.

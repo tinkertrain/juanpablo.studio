@@ -3,11 +3,11 @@ title: Cantina Comunale di Novello
 date: 2026-06-27
 location: Novello, Piemonte, Italy
 medium: Ink, Watercolor
-cover: /img/jp_20260709_novello_02.jpg
+cover: /src/assets/img/jp_20260709_novello_02.jpg
 images:
-  - /img/jp_20260709_novello_01.jpg
-  - /img/JP_20260709_Novello.jpg
-  - /img/novello_photo.jpg
+  - /src/assets/img/jp_20260709_novello_01.jpg
+  - /src/assets/img/JP_20260709_Novello.jpg
+  - /src/assets/img/novello_photo.jpg
 ---
 Piemonte → Vineyards → Wine → ❤️
 

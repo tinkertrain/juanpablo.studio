@@ -8,11 +8,11 @@ height: 137
 category: watercolor
 alsoIn:
   - artifacts
-cover: /img/Scroll_02.jpg
+cover: /src/assets/img/Scroll_02.jpg
 images:
-  - /img/Scroll_01.jpg
-  - /img/scroll_03.jpg
-  - /img/scroll_04.jpg
+  - /src/assets/img/Scroll_01.jpg
+  - /src/assets/img/scroll_03.jpg
+  - /src/assets/img/scroll_04.jpg
 ---
 
 I've always loved the Japanese scrolls with paintings of elegant women and flowers, so I took inspiration and created my own.

@@ -6,11 +6,11 @@ medium: Acrylics on cotton canvas
 width: 180
 height: 130
 category: acrylic
-cover: /img/covadonga_cover.jpg
+cover: /src/assets/img/covadonga_cover.jpg
 images:
-  - /img/covadonga_001.jpg
-  - /img/covadonga_002.jpg
-  - /img/covadonga_003.jpg
-  - /img/covadonga_004.jpg
+  - /src/assets/img/covadonga_001.jpg
+  - /src/assets/img/covadonga_002.jpg
+  - /src/assets/img/covadonga_003.jpg
+  - /src/assets/img/covadonga_004.jpg
 ---
 This panorama of the beautiful lake of Covadonga is the largest painting I had done at that point.

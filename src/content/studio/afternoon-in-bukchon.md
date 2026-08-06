@@ -6,7 +6,7 @@ medium: Watercolor on 100% cotton paper
 width: 26
 height: 34
 category: watercolor
-cover: /img/Seoul.jpg
+cover: /src/assets/img/Seoul.jpg
 ---
 
 Walking among the Hanok in the Bukchon neighbourhood of Seoul, here we find Heather, bathed by the afternoon light.

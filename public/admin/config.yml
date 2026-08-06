@@ -15,8 +15,11 @@ backend:
 # local git repo instead of GitHub. Ignored in production.
 local_backend: true
 
-media_folder: public/img
-public_folder: /img
+# Artwork lives in src/assets so Astro can resize and re-encode it at build
+# time. `public_folder` is the path written into frontmatter, which is what
+# src/utils/images.ts resolves against.
+media_folder: src/assets/img
+public_folder: /src/assets/img
 
 collections:
   - name: "studio"
@@ -209,7 +212,17 @@ collections:
         name: "index"
         fields:
           - { label: "Title", name: "title", widget: "string" }
-          - { label: "Background image", name: "background", widget: "image", choose_url: false, required: false }
+          # Served as a CSS background, so it cannot go through Astro's image
+          # pipeline and has to stay a real file under public/.
+          - {
+              label: "Background image",
+              name: "background",
+              widget: "image",
+              choose_url: false,
+              required: false,
+              media_folder: "/public/img",
+              public_folder: "/img",
+            }
           - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
           - { label: "Email", name: "email", widget: "string", required: false }
           - { label: "Intro", name: "body", widget: "markdown" }

@@ -8,6 +8,19 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Images
+
+Artwork lives in `src/assets/img/` and is referenced from frontmatter as
+`/src/assets/img/<file>.jpg`, which `src/utils/images.ts` resolves so Astro can
+emit resized WebP variants. Decap writes that same path (`public_folder` in
+`public/admin/config.yml`).
+
+Only images that a CSS `url()` or an absolute social URL needs stay in
+`public/img/`; those cannot go through the image pipeline.
+
+`npm run compress` re-encodes originals from `raw-images/` into
+`src/assets/img/`.
+
 ## Styles
 
 Three global stylesheets, imported by `src/layouts/Layout.astro`:

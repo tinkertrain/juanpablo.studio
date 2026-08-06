@@ -6,12 +6,12 @@ medium: Watercolor on 100% cotton
 width: 23
 height: 17
 category: watercolor
-cover: /img/JP_20260714_Brunello.jpg
+cover: /src/assets/img/JP_20260714_Brunello.jpg
 images:
-  - /img/brunello_01.jpg
-  - /img/brunello_02.jpg
-  - /img/brunello_03.jpg
-  - /img/brunello_04.jpg
+  - /src/assets/img/brunello_01.jpg
+  - /src/assets/img/brunello_02.jpg
+  - /src/assets/img/brunello_03.jpg
+  - /src/assets/img/brunello_04.jpg
 ---
 
 This adorable guy found and kept following us when walking a on quiet neighbourhood in Rome, I never painted a cat (or any other animal) before but just look at him, how can you not? We took up on ourselves and named him Brunello. Capturing Brunello's personality wasn't that easy! And leaving him there either.

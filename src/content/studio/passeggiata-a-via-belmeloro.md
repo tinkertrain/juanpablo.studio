@@ -6,6 +6,6 @@ medium: Oil on Linen mounted on ACM panel
 width: 33
 height: 42
 category: oil
-cover: /img/Bologna.jpg
+cover: /src/assets/img/Bologna.jpg
 ---
 Tried to capture a little bit of the essence of Bologna in this painting, the light, the porticoes, the warm colors.

@@ -6,7 +6,7 @@
 //   node scripts/compress-images.mjs [inputDir] [options]
 //
 //   inputDir            Folder of source images (default: raw-images/)
-//   --out <dir>         Output folder (default: public/img)
+//   --out <dir>         Output folder (default: src/assets/img)
 //   --quality <n>       MozJPEG quality 1-100 (default: 75)
 //   --width <n>         Max width in px, never upscales (default: 1600)
 //   --pano-width <n>    Max width for wide panoramas (default: 2400)
@@ -22,7 +22,7 @@ import sharp from "sharp";
 
 const DEFAULTS = {
   input: "raw-images",
-  out: "public/img",
+  out: "src/assets/img",
   quality: 75,
   width: 1600,
   panoWidth: 2400,

@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import { resolveImage } from '../utils/images';
 import {
   type Section,
   type PaintingCollection,
@@ -58,7 +60,15 @@ const href = (p: Props['paintings'][number]) => {
       <div class="masonry">
         {paintings.map((p) => (
           <a class="masonry-item" href={href(p)}>
-            <img src={thumb(p)} alt={p.data.title} loading="lazy" />
+            {/* One column at 480px, two to 980px, three above: the widest a
+                thumbnail ever gets is about half the 1680px content column. */}
+            <Image
+              src={resolveImage(thumb(p))}
+              alt={p.data.title}
+              widths={[400, 600, 900]}
+              sizes="(max-width: 480px) 100vw, (max-width: 980px) 50vw, 33vw"
+              loading="lazy"
+            />
           </a>
         ))}
       </div>

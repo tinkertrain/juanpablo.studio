@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Lightbox from '../components/Lightbox.astro';
+import { Image, getImage } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
+import { resolveImage } from '../utils/images';
 import {
   type Section,
   type PaintingCollection,
@@ -23,7 +25,16 @@ const size = formatSize(width, height);
 
 // The cover doubles as the main image so it never has to be entered twice.
 // Drop it from `images` if it was also listed there, to avoid a duplicate.
-const gallery = cover ? [cover, ...images.filter((src) => src !== cover)] : images;
+const gallery = (
+  cover ? [cover, ...images.filter((src) => src !== cover)] : images
+).map(resolveImage);
+
+// The lightbox swaps `src` from JS, so it needs plain URLs rather than an
+// <Image>. Full resolution, since that is what the zoom has to draw on, but
+// re-encoded, which costs nothing in detail.
+const lightboxImages = await Promise.all(
+  gallery.map((src) => getImage({ src, format: 'webp' })),
+);
 
 const formattedDate = date
   ? new Intl.DateTimeFormat('en', { year: 'numeric', month: 'long' }).format(date)
@@ -38,7 +49,14 @@ const formattedDate = date
       <div class="painting-main">
         {gallery[0] && (
           <button class="painting-image" data-index={0} type="button">
-            <img src={gallery[0]} alt={title} />
+            {/* The 3fr column of a 1280px page, full width once it stacks. */}
+            <Image
+              src={gallery[0]}
+              alt={title}
+              widths={[600, 900, 1400]}
+              sizes="(max-width: 800px) 100vw, 60vw"
+              loading="eager"
+            />
           </button>
         )}
       </div>
@@ -58,14 +76,20 @@ const formattedDate = date
       <div class="painting-more">
         {gallery.slice(1).map((src, i) => (
           <button class="painting-image" data-index={i + 1} type="button">
-            <img src={src} alt={`${title} (${i + 2})`} loading="lazy" />
+            <Image
+              src={src}
+              alt={`${title} (${i + 2})`}
+              widths={[300, 500]}
+              sizes="(max-width: 480px) 100vw, 300px"
+              loading="lazy"
+            />
           </button>
         ))}
       </div>
     )}
   </article>
 
-  <Lightbox images={gallery} alt={title} />
+  <Lightbox images={lightboxImages.map((img) => img.src)} alt={title} />
 </Layout>
 
 <style>

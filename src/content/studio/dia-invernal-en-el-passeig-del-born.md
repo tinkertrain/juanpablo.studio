@@ -6,12 +6,12 @@ medium: Oil on cotton canvas
 width: 180
 height: 130
 category: oil
-cover: /img/born_cover.jpg
+cover: /src/assets/img/born_cover.jpg
 images:
-  - /img/born_002.jpg
-  - /img/born_001.jpg
-  - /img/born_003.jpg
-  - /img/born_004.jpg
-  - /img/born_005.jpg
+  - /src/assets/img/born_002.jpg
+  - /src/assets/img/born_001.jpg
+  - /src/assets/img/born_003.jpg
+  - /src/assets/img/born_004.jpg
+  - /src/assets/img/born_005.jpg
 ---
 Largest oil painting to date, a winter day in Barcelona, the light in the scene captivated me and I tried really hard to capture that feeling.

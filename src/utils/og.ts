@@ -1,4 +1,4 @@
-// Maps a painting cover path (e.g. /img/Foo.jpg) to its downscaled social
+// Maps a painting cover path (e.g. /src/assets/img/Foo.jpg) to its downscaled social
 // share image emitted at build time by the og-images integration.
 export function ogImagePath(cover: string): string {
   const base = cover.split('/').pop()!.replace(/\.[^.]+$/, '');
