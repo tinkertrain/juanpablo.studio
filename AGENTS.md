@@ -18,6 +18,11 @@ emit resized WebP variants. Decap writes that same path (`public_folder` in
 Only images that a CSS `url()` or an absolute social URL needs stay in
 `public/img/`; those cannot go through the image pipeline.
 
+That frontmatter path is build-time only, so Decap's preview pane and its image
+widget thumbnails would 404 on it. `src/pages/src/assets/img/[...file].ts`
+redirects the path to the hashed asset Astro emits, which is the only reason the
+CMS can display saved artwork.
+
 `npm run compress` re-encodes originals from `raw-images/` into
 `src/assets/img/`.
 
