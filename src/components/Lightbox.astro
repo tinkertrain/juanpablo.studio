@@ -46,6 +46,8 @@ const multiple = images.length > 1;
   const ZOOM_STEP = 1.5;
   /** Pixels the view travels per arrow key press while zoomed. */
   const PAN_STEP = 80;
+  /** Pointer travel, in pixels, that turns a click into a drag. */
+  const DRAG_SLOP = 4;
   /** Scales are floats; compare against the limits with a little tolerance. */
   const EPSILON = 0.001;
 
@@ -157,12 +159,21 @@ const multiple = images.length > 1;
     document.getElementById('lightbox-prev')?.addEventListener('click', step(-1), { signal });
     document.getElementById('lightbox-next')?.addEventListener('click', step(1), { signal });
 
-    // At fit, clicking the backdrop closes, as it always has. Once zoomed the
-    // surface belongs to dragging instead.
+    // The zoom-in cursor on the image has to mean something, so a click on the
+    // art steps the zoom in around the point clicked, just as the + button does.
+    // Only the backdrop closes, and only at fit; once zoomed the surface belongs
+    // to dragging instead.
     box.addEventListener(
       'click',
       (event) => {
-        if (event.target === box && !zoomed()) close();
+        if (moved) return; // that was a pan, not a click
+        if (event.target === img) {
+          // zoomTo stops at the ceiling, which is what makes this go inert there
+          // rather than falling through to something surprising.
+          zoomTo(scale * ZOOM_STEP, focusFrom(event.clientX, event.clientY));
+        } else if (event.target === box && !zoomed()) {
+          close();
+        }
       },
       { signal }
     );
@@ -177,20 +188,14 @@ const multiple = images.length > 1;
       { passive: false, signal }
     );
 
-    img.addEventListener(
-      'dblclick',
-      (event) => {
-        if (zoomed()) resetZoom();
-        else zoomTo(maxScale, focusFrom(event.clientX, event.clientY));
-      },
-      { signal }
-    );
-
     // Drag to pan, two fingers to pinch. Pointer Events cover mouse, touch and pen
     // with one code path.
     const pointers = new Map<number, Point>();
     let drag: { from: Point; pan: Pan } | null = null;
     let pinch: { spread: number; scale: number; pan: Pan; focus: Point } | null = null;
+    /** Where the press began, and whether it travelled far enough to be a drag. */
+    let press: Point | null = null;
+    let moved = false;
 
     const spread = () => {
       const [a, b] = [...pointers.values()];
@@ -211,9 +216,16 @@ const multiple = images.length > 1;
         box.setPointerCapture(event.pointerId);
         box.classList.add('is-interacting');
 
+        if (pointers.size === 1) {
+          press = { x: event.clientX, y: event.clientY };
+          moved = false;
+        }
+
         if (pointers.size === 2) {
           const mid = midpoint();
           drag = null;
+          // A pinch is never a click, whatever the fingers did afterwards.
+          moved = true;
           pinch = { spread: spread(), scale, pan, focus: focusFrom(mid.x, mid.y) };
         } else if (pointers.size === 1 && zoomed()) {
           drag = { from: { x: event.clientX, y: event.clientY }, pan };
@@ -227,6 +239,11 @@ const multiple = images.length > 1;
       (event) => {
         if (!pointers.has(event.pointerId)) return;
         pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+        // A little slop, so a hand-held click that wobbles still counts as a click.
+        if (press && !moved && Math.hypot(event.clientX - press.x, event.clientY - press.y) > DRAG_SLOP) {
+          moved = true;
+        }
 
         if (pinch && pointers.size >= 2) {
           const next = clampScale(pinch.scale * (spread() / pinch.spread), maxScale);
