@@ -1,0 +1,428 @@
+---
+interface Props {
+  images: string[];
+  alt: string;
+}
+
+const { images, alt } = Astro.props;
+const multiple = images.length > 1;
+---
+
+<div
+  class="lightbox"
+  id="lightbox"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-label="Image viewer"
+  data-images={JSON.stringify(images)}
+  data-alt={alt}
+>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="" draggable="false" />
+
+  <button class="lightbox-btn lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+
+  {multiple && (
+    <button class="lightbox-btn lightbox-prev" id="lightbox-prev" aria-label="Previous">&lt;</button>
+  )}
+  {multiple && (
+    <button class="lightbox-btn lightbox-next" id="lightbox-next" aria-label="Next">&gt;</button>
+  )}
+
+  <div class="lightbox-zoom">
+    <button class="lightbox-btn" id="lightbox-zoom-out" aria-label="Zoom out">&minus;</button>
+    <button class="lightbox-btn lightbox-level" id="lightbox-zoom-reset" aria-label="Reset zoom">
+      100%
+    </button>
+    <button class="lightbox-btn" id="lightbox-zoom-in" aria-label="Zoom in">+</button>
+  </div>
+</div>
+
+<script>
+  import { MIN_SCALE, maxScaleFor, clampScale, zoomAt, clampPan } from '../utils/zoom';
+  import type { Pan, Point } from '../utils/zoom';
+
+  /** Multiplier per button press or keyboard step. */
+  const ZOOM_STEP = 1.5;
+  /** Pixels the view travels per arrow key press while zoomed. */
+  const PAN_STEP = 80;
+  /** Scales are floats; compare against the limits with a little tolerance. */
+  const EPSILON = 0.001;
+
+  const ORIGIN: Point = { x: 0, y: 0 };
+
+  let teardown: AbortController | null = null;
+
+  function init(signal: AbortSignal) {
+    const box = document.getElementById('lightbox');
+    if (!box) return;
+
+    const img = document.getElementById('lightbox-img') as HTMLImageElement;
+    const closeBtn = document.getElementById('lightbox-close') as HTMLButtonElement;
+    const zoomIn = document.getElementById('lightbox-zoom-in') as HTMLButtonElement;
+    const zoomOut = document.getElementById('lightbox-zoom-out') as HTMLButtonElement;
+    const zoomReset = document.getElementById('lightbox-zoom-reset') as HTMLButtonElement;
+
+    const images: string[] = JSON.parse(box.dataset.images || '[]');
+    const baseAlt = box.dataset.alt || '';
+
+    let index = 0;
+    let scale = MIN_SCALE;
+    let pan: Pan = { tx: 0, ty: 0 };
+    let maxScale = MIN_SCALE;
+    /** The thumbnail that opened the lightbox, so focus can go back to it. */
+    let opener: HTMLElement | null = null;
+
+    const zoomed = () => scale > MIN_SCALE + EPSILON;
+
+    /** The image's laid-out size, which the transform does not affect. */
+    const fitSize = () => ({ width: img.offsetWidth, height: img.offsetHeight });
+    const stageSize = () => ({ width: box.clientWidth, height: box.clientHeight });
+
+    const render = () => {
+      pan = clampPan(pan, scale, fitSize(), stageSize());
+      img.style.transform = `translate(${pan.tx}px, ${pan.ty}px) scale(${scale})`;
+      box.classList.toggle('is-zoomed', zoomed());
+      zoomIn.disabled = scale >= maxScale - EPSILON;
+      zoomOut.disabled = !zoomed();
+      zoomReset.disabled = !zoomed();
+      zoomReset.textContent = `${Math.round(scale * 100)}%`;
+    };
+
+    /** Re-derive the ceiling: it depends on both the file and the viewport. */
+    const measure = () => {
+      maxScale = maxScaleFor(img.naturalWidth, img.offsetWidth);
+      render();
+    };
+
+    const zoomTo = (next: number, focus: Point) => {
+      const clamped = clampScale(next, maxScale);
+      if (Math.abs(clamped - scale) < EPSILON) return;
+      pan = zoomAt(pan, scale, clamped, focus);
+      scale = clamped;
+      render();
+    };
+
+    const resetZoom = () => {
+      scale = MIN_SCALE;
+      pan = { tx: 0, ty: 0 };
+      render();
+    };
+
+    /** Pointer position relative to the stage centre, where the image sits at fit. */
+    const focusFrom = (x: number, y: number): Point => {
+      const rect = box.getBoundingClientRect();
+      return { x: x - (rect.left + rect.width / 2), y: y - (rect.top + rect.height / 2) };
+    };
+
+    const show = (i: number) => {
+      index = (i + images.length) % images.length;
+      img.src = images[index];
+      img.alt = images.length > 1 ? `${baseAlt} (${index + 1})` : baseAlt;
+      resetZoom();
+      if (img.complete) measure();
+    };
+
+    const open = (i: number, trigger: HTMLElement | null) => {
+      opener = trigger;
+      show(i);
+      box.hidden = false;
+      document.body.classList.add('lightbox-open');
+      closeBtn.focus();
+    };
+
+    const close = () => {
+      box.hidden = true;
+      document.body.classList.remove('lightbox-open');
+      resetZoom();
+      opener?.focus();
+      opener = null;
+    };
+
+    img.addEventListener('load', measure, { signal });
+
+    document.querySelectorAll<HTMLElement>('.painting-image').forEach((btn) => {
+      btn.addEventListener('click', () => open(Number(btn.dataset.index), btn), { signal });
+    });
+
+    closeBtn.addEventListener('click', close, { signal });
+    zoomIn.addEventListener('click', () => zoomTo(scale * ZOOM_STEP, ORIGIN), { signal });
+    zoomOut.addEventListener('click', () => zoomTo(scale / ZOOM_STEP, ORIGIN), { signal });
+    zoomReset.addEventListener('click', resetZoom, { signal });
+
+    const step = (delta: number) => (event: Event) => {
+      event.stopPropagation();
+      show(index + delta);
+    };
+    document.getElementById('lightbox-prev')?.addEventListener('click', step(-1), { signal });
+    document.getElementById('lightbox-next')?.addEventListener('click', step(1), { signal });
+
+    // At fit, clicking the backdrop closes, as it always has. Once zoomed the
+    // surface belongs to dragging instead.
+    box.addEventListener(
+      'click',
+      (event) => {
+        if (event.target === box && !zoomed()) close();
+      },
+      { signal }
+    );
+
+    box.addEventListener(
+      'wheel',
+      (event) => {
+        event.preventDefault();
+        // Exponential so a given wheel distance zooms by the same ratio at any scale.
+        zoomTo(scale * Math.exp(-event.deltaY * 0.002), focusFrom(event.clientX, event.clientY));
+      },
+      { passive: false, signal }
+    );
+
+    img.addEventListener(
+      'dblclick',
+      (event) => {
+        if (zoomed()) resetZoom();
+        else zoomTo(maxScale, focusFrom(event.clientX, event.clientY));
+      },
+      { signal }
+    );
+
+    // Drag to pan, two fingers to pinch. Pointer Events cover mouse, touch and pen
+    // with one code path.
+    const pointers = new Map<number, Point>();
+    let drag: { from: Point; pan: Pan } | null = null;
+    let pinch: { spread: number; scale: number; pan: Pan; focus: Point } | null = null;
+
+    const spread = () => {
+      const [a, b] = [...pointers.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+    const midpoint = () => {
+      const [a, b] = [...pointers.values()];
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    };
+
+    box.addEventListener(
+      'pointerdown',
+      (event) => {
+        if ((event.target as HTMLElement).closest('button')) return;
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        box.setPointerCapture(event.pointerId);
+        box.classList.add('is-interacting');
+
+        if (pointers.size === 2) {
+          const mid = midpoint();
+          drag = null;
+          pinch = { spread: spread(), scale, pan, focus: focusFrom(mid.x, mid.y) };
+        } else if (pointers.size === 1 && zoomed()) {
+          drag = { from: { x: event.clientX, y: event.clientY }, pan };
+        }
+      },
+      { signal }
+    );
+
+    box.addEventListener(
+      'pointermove',
+      (event) => {
+        if (!pointers.has(event.pointerId)) return;
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+        if (pinch && pointers.size >= 2) {
+          const next = clampScale(pinch.scale * (spread() / pinch.spread), maxScale);
+          pan = zoomAt(pinch.pan, pinch.scale, next, pinch.focus);
+          scale = next;
+          render();
+        } else if (drag) {
+          pan = {
+            tx: drag.pan.tx + (event.clientX - drag.from.x),
+            ty: drag.pan.ty + (event.clientY - drag.from.y),
+          };
+          render();
+        }
+      },
+      { signal }
+    );
+
+    const endPointer = (event: PointerEvent) => {
+      pointers.delete(event.pointerId);
+      if (pointers.size < 2) pinch = null;
+      if (pointers.size === 0) {
+        drag = null;
+        box.classList.remove('is-interacting');
+      }
+    };
+    box.addEventListener('pointerup', endPointer, { signal });
+    box.addEventListener('pointercancel', endPointer, { signal });
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (box.hidden) return;
+
+        const panBy = (dx: number, dy: number) => {
+          pan = { tx: pan.tx + dx, ty: pan.ty + dy };
+          render();
+        };
+
+        switch (event.key) {
+          case 'Escape':
+            close();
+            return;
+          case 'ArrowLeft':
+            zoomed() ? panBy(PAN_STEP, 0) : show(index - 1);
+            break;
+          case 'ArrowRight':
+            zoomed() ? panBy(-PAN_STEP, 0) : show(index + 1);
+            break;
+          case 'ArrowUp':
+            if (!zoomed()) return;
+            panBy(0, PAN_STEP);
+            break;
+          case 'ArrowDown':
+            if (!zoomed()) return;
+            panBy(0, -PAN_STEP);
+            break;
+          case '+':
+          case '=':
+            zoomTo(scale * ZOOM_STEP, ORIGIN);
+            break;
+          case '-':
+          case '_':
+            zoomTo(scale / ZOOM_STEP, ORIGIN);
+            break;
+          case '0':
+            resetZoom();
+            break;
+          default:
+            return;
+        }
+        event.preventDefault();
+      },
+      { signal }
+    );
+
+    window.addEventListener('resize', () => !box.hidden && measure(), { signal });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    // Detach everything the previous page-load wired up, in one call.
+    teardown?.abort();
+    teardown = new AbortController();
+    init(teardown.signal);
+  });
+</script>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: color-mix(in srgb, var(--indigo) 95%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1000;
+    /* The viewer owns every gesture inside it, including pinch. */
+    touch-action: none;
+  }
+  .lightbox[hidden] {
+    display: none;
+  }
+  /* Leave a clear band under the image for the zoom controls. */
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: 84vh;
+    transform-origin: center;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-drag: none;
+    cursor: zoom-in;
+    transition: transform 0.18s ease;
+  }
+  .lightbox.is-zoomed .lightbox-img {
+    cursor: grab;
+  }
+  /* Dragging and pinching must track the finger exactly, with no easing. */
+  .lightbox.is-interacting .lightbox-img {
+    transition: none;
+  }
+  .lightbox.is-interacting.is-zoomed .lightbox-img {
+    cursor: grabbing;
+  }
+
+  .lightbox-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    background: var(--quin-rose);
+    color: #fff;
+    border: 0;
+    box-shadow: none;
+    border-radius: 15px;
+    font-size: 31px;
+    line-height: 1;
+    /* Marker glyphs sit low on the baseline; nudge them up to center. */
+    padding: 0 0 5px;
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      opacity 0.15s ease;
+  }
+  .lightbox-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--quin-rose) 82%, black);
+  }
+  .lightbox-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .lightbox-close,
+  .lightbox-prev,
+  .lightbox-next {
+    position: absolute;
+  }
+  .lightbox-prev,
+  .lightbox-next {
+    width: 40px;
+    height: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lightbox-close {
+    width: 40px;
+    height: 40px;
+    top: 1rem;
+    right: 1.5rem;
+  }
+  .lightbox-prev {
+    left: 1.5rem;
+  }
+  .lightbox-next {
+    right: 1.5rem;
+  }
+
+  .lightbox-zoom {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+  }
+  .lightbox-zoom .lightbox-btn {
+    width: 40px;
+    height: 40px;
+  }
+  /* Fixed width so the label does not shift as the percentage changes. */
+  .lightbox-level {
+    width: 72px;
+    font-size: 14px;
+    padding: 0;
+  }
+
+  :global(body.lightbox-open) {
+    overflow: hidden;
+  }
+</style>

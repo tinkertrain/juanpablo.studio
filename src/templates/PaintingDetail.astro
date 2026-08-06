@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { render, type CollectionEntry } from 'astro:content';
 import {
   type Section,
@@ -64,59 +65,7 @@ const formattedDate = date
     )}
   </article>
 
-  <div class="lightbox" id="lightbox" hidden>
-    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
-    {gallery.length > 1 && (
-      <button class="lightbox-prev" id="lightbox-prev" aria-label="Previous">&lt;</button>
-    )}
-    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
-    {gallery.length > 1 && (
-      <button class="lightbox-next" id="lightbox-next" aria-label="Next">&gt;</button>
-    )}
-  </div>
-
-  <script is:inline define:vars={{ images: gallery }}>
-    document.addEventListener('astro:page-load', () => {
-      const box = document.getElementById('lightbox');
-      if (!box) return;
-      const img = document.getElementById('lightbox-img');
-      let current = 0;
-
-      const show = (i) => {
-        current = (i + images.length) % images.length;
-        img.src = images[current];
-        box.hidden = false;
-      };
-      const hide = () => { box.hidden = true; };
-
-      document.querySelectorAll('.painting-image').forEach((btn) => {
-        btn.addEventListener('click', () => show(Number(btn.dataset.index)));
-      });
-      document.getElementById('lightbox-close').addEventListener('click', hide);
-      const prev = document.getElementById('lightbox-prev');
-      const next = document.getElementById('lightbox-next');
-      if (prev) prev.addEventListener('click', (e) => {
-        e.stopPropagation();
-        show(current - 1);
-      });
-      if (next) next.addEventListener('click', (e) => {
-        e.stopPropagation();
-        show(current + 1);
-      });
-      box.addEventListener('click', (e) => { if (e.target === box) hide(); });
-
-      const onKey = (e) => {
-        if (box.hidden) return;
-        if (e.key === 'Escape') hide();
-        if (e.key === 'ArrowLeft') show(current - 1);
-        if (e.key === 'ArrowRight') show(current + 1);
-      };
-      // Remove any handler left by a previous page-load, then attach one.
-      document.removeEventListener('keydown', window.__pdKey || (() => {}));
-      window.__pdKey = onKey;
-      document.addEventListener('keydown', onKey);
-    });
-  </script>
+  <Lightbox images={gallery} alt={title} />
 </Layout>
 
 <style>
@@ -190,50 +139,4 @@ const formattedDate = date
     display: block;
     border-radius: var(--radius);
   }
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    background: color-mix(in srgb, var(--indigo) 95%, transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  .lightbox[hidden] { display: none; }
-  .lightbox-img { max-width: 90vw; max-height: 90vh; }
-  .lightbox-close, .lightbox-prev, .lightbox-next {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    background: var(--quin-rose);
-    color: #fff;
-    border: 0;
-    box-shadow: none;
-    border-radius: 15px;
-    font-size: 31px;
-    line-height: 1;
-    /* Marker glyphs sit low on the baseline; nudge them up to center. */
-    padding: 0 0 5px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-  }
-  .lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
-    background: color-mix(in srgb, var(--quin-rose) 82%, black);
-  }
-  .lightbox-prev, .lightbox-next {
-    width: 40px;
-    height: 55px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .lightbox-close {
-    width: 40px;
-    height: 40px;
-    top: 1rem;
-    right: 1.5rem;
-  }
-  .lightbox-prev { left: 1.5rem; }
-  .lightbox-next { right: 1.5rem; }
 </style>
