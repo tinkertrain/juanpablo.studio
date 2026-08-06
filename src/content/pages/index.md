@@ -1,5 +1,4 @@
 ---
-templateKey: home
 title: Juan Pablo
 background: /img/usk_bg.jpg
 instagram: https://www.instagram.com/juanpablo_artista/

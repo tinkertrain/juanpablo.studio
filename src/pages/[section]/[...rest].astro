@@ -4,6 +4,7 @@ import Gallery from '../../templates/Gallery.astro';
 import PaintingDetail from '../../templates/PaintingDetail.astro';
 import {
   SECTIONS,
+  type Section,
   type PaintingCollection,
   filterPaintings,
   availableCategories,
@@ -12,11 +13,30 @@ import {
 
 type Painting = CollectionEntry<PaintingCollection>;
 
+/**
+ * One route serves both a section's gallery and the pages of the pieces in it,
+ * so `kind` is what tells the two apart.
+ */
+type PageProps =
+  | {
+      kind: 'index';
+      section: Section;
+      paintings: Painting[];
+      categories: string[];
+      activeCategory: string | null;
+    }
+  | { kind: 'detail'; section: Section; painting: Painting };
+
+type Path = {
+  params: { section: string; rest: string | undefined };
+  props: PageProps;
+};
+
 export async function getStaticPaths() {
   const byDateDesc = (a: Painting, b: Painting) =>
     new Date(b.data.date || 0).getTime() - new Date(a.data.date || 0).getTime();
 
-  const paths: any[] = [];
+  const paths: Path[] = [];
 
   // Every piece, so a section's gallery can pick up cross-listed ones.
   const everything = (
@@ -79,7 +99,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const props = Astro.props as any;
+const props = Astro.props as PageProps;
 ---
 
 {

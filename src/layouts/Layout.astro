@@ -1,17 +1,16 @@
 ---
 import "../styles/vars.css";
-import "../styles/content.css";
+import "../styles/base.css";
 import "../styles/layout.css";
 
 import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
-export interface Props {
+interface Props {
     title?: string;
     description?: string;
     image?: string;
-    children?: any;
 }
 
 const { title, description, image } = Astro.props;
@@ -21,6 +20,9 @@ const pageDescription = description || "Painter, urban sketcher, plein air artis
 // Social scrapers (WhatsApp, iMessage, Slack, Facebook) require an absolute URL.
 const ogImage = new URL(image || "/img/usk_bg.jpg", Astro.site).href;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const FONTS_HREF =
+    "https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=League+Spartan:wght@300;400;500;600;700&family=Permanent+Marker&display=swap";
 ---
 
 <!doctype html>
@@ -28,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <head>
         <meta charset="UTF-8" />
         <meta name="description" content={pageDescription} />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={canonical} />
 
         <meta property="og:type" content="website" />
@@ -49,25 +51,40 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="generator" content={Astro.generator} />
-        <title>{title || "Juan Pablo"}</title>
+        <title>{pageTitle}</title>
+
+        {/* Loaded here rather than through an @import inside the CSS, which
+            could not start fetching until the stylesheet had been parsed. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href={FONTS_HREF} />
+
         <ClientRouter />
         <script is:inline>
-            // Theme init. A saved choice wins; otherwise follow the OS
-            // preference. Runs before paint to avoid a flash of the wrong theme.
-            const theme = (() => {
-                const stored =
-                    typeof localStorage !== "undefined" &&
-                    localStorage.getItem("theme");
-                if (stored) return stored;
-                return window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light";
-            })();
-            if (theme === "dark") {
-                document.documentElement.setAttribute("data-theme", "dark");
-            } else {
-                document.documentElement.removeAttribute("data-theme");
-            }
+            // The one place the theme rule lives: a saved choice wins, otherwise
+            // follow the OS. Defined and applied before paint so the first render
+            // is already the right colour, then reused by the toggle below and
+            // after every view transition.
+            window.__theme = {
+                preferred() {
+                    return (
+                        localStorage.getItem("theme") ||
+                        (window.matchMedia("(prefers-color-scheme: dark)")
+                            .matches
+                            ? "dark"
+                            : "light")
+                    );
+                },
+                apply(theme) {
+                    const root = document.documentElement;
+                    if (theme === "dark") {
+                        root.setAttribute("data-theme", "dark");
+                    } else {
+                        root.removeAttribute("data-theme");
+                    }
+                },
+            };
+            window.__theme.apply(window.__theme.preferred());
         </script>
     </head>
     <body class="site-wrapper">
@@ -80,101 +97,44 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         <Footer />
 
         <script>
-            import { navigate } from "astro:transitions/client";
+            const theme = window.__theme;
 
-            function initNav() {
-                const burger = document.querySelector(".nav-burger");
-                const wrapper = document.querySelector(".site-wrapper");
-                if (burger && wrapper) {
-                    burger.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        wrapper.classList.toggle("site-head-open");
-                    });
-                }
-            }
-
-            function initTheme() {
-                const toggleBtn = document.getElementById("theme-toggle");
-                const updateIcon = () => {
-                    const isDark =
-                        document.documentElement.getAttribute("data-theme") ===
-                        "dark";
-                    // Add logic to animate or swap icons if needed, currently CSS handles visibility? No, added SVGs.
-                    // Simple SVG toggle:
-                    const sun = document.querySelector(
-                        ".sun-icon",
-                    ) as HTMLElement;
-                    const moon = document.querySelector(
-                        ".moon-icon",
-                    ) as HTMLElement;
-                    if (sun && moon) {
-                        sun.style.display = isDark ? "inline-block" : "none";
-                        moon.style.display = isDark ? "none" : "inline-block";
-                    }
-                };
-
-                updateIcon();
-
-                // Follow live OS theme changes until the user picks a theme.
-                window.matchMedia("(prefers-color-scheme: dark)").onchange = (
-                    e,
-                ) => {
+            // Follow live OS changes until the user picks a theme. Registered at
+            // module scope, which runs once, unlike the per-page wiring below.
+            window
+                .matchMedia("(prefers-color-scheme: dark)")
+                .addEventListener("change", () => {
                     if (localStorage.getItem("theme")) return;
-                    if (e.matches) {
-                        document.documentElement.setAttribute(
-                            "data-theme",
-                            "dark",
-                        );
-                    } else {
-                        document.documentElement.removeAttribute("data-theme");
-                    }
-                    updateIcon();
-                };
+                    theme.apply(theme.preferred());
+                });
 
-                if (toggleBtn) {
-                    toggleBtn.addEventListener("click", () => {
-                        const currentTheme =
-                            document.documentElement.getAttribute("data-theme");
-                        const newTheme =
-                            currentTheme === "dark" ? "light" : "dark";
+            // A client-side navigation swaps <html>, taking the attribute with it.
+            document.addEventListener("astro:after-swap", () =>
+                theme.apply(theme.preferred()),
+            );
 
-                        if (newTheme === "dark") {
-                            document.documentElement.setAttribute(
-                                "data-theme",
-                                "dark",
-                            );
-                        } else {
-                            document.documentElement.removeAttribute(
-                                "data-theme",
-                            );
-                        }
-                        localStorage.setItem("theme", newTheme);
-                        updateIcon();
-                    });
-                }
-            }
-
-            // Run on view transitions (fires on initial load too)
+            // The header is replaced on every transition, so its listeners have
+            // to be attached again each time. Fires on the initial load too.
             document.addEventListener("astro:page-load", () => {
-                initNav();
-                initTheme();
-            });
+                const wrapper = document.querySelector(".site-wrapper");
+                const burger = document.querySelector(".nav-burger");
+                burger?.addEventListener("click", () => {
+                    const open = wrapper?.classList.toggle("site-head-open");
+                    burger.setAttribute("aria-expanded", String(!!open));
+                });
 
-            // Re-apply theme on swap to prevent flash?
-            // The is:inline script in head handles the initial check on reload.
-            // astro:after-swap handles verifying state after client-side nav.
-            document.addEventListener("astro:after-swap", () => {
-                const theme = localStorage.getItem("theme");
-                if (
-                    theme === "dark" ||
-                    (!theme &&
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches)
-                ) {
-                    document.documentElement.setAttribute("data-theme", "dark");
-                } else {
-                    document.documentElement.removeAttribute("data-theme");
-                }
+                document
+                    .getElementById("theme-toggle")
+                    ?.addEventListener("click", () => {
+                        const next =
+                            document.documentElement.getAttribute(
+                                "data-theme",
+                            ) === "dark"
+                                ? "light"
+                                : "dark";
+                        theme.apply(next);
+                        localStorage.setItem("theme", next);
+                    });
             });
         </script>
     </body>

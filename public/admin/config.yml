@@ -208,9 +208,7 @@ collections:
         label: "Home"
         name: "index"
         fields:
-          - { label: "Template Key", name: "templateKey", widget: "hidden", default: "home" }
           - { label: "Title", name: "title", widget: "string" }
-          - { label: "Portrait", name: "portrait", widget: "image", choose_url: false, required: false }
           - { label: "Background image", name: "background", widget: "image", choose_url: false, required: false }
           - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
           - { label: "Email", name: "email", widget: "string", required: false }

@@ -30,10 +30,6 @@ const pages = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(),
-    templateKey: z.string().optional(),
-    thumbnail: z.string().optional(),
-    portrait: z.string().optional(),
     background: z.string().optional(),
     instagram: z.string().optional(),
     email: z.string().optional(),

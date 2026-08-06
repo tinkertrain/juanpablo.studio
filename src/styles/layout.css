@@ -1,72 +1,18 @@
-/* Global Styles */
-body {
-  font-family: var(--font-serif);
-  background: var(--color-bg);
-  color: var(--color-base); /* Ensure text respects theme */
-  transition:
-    background 0.3s ease-out,
-    color 0.3s ease-out;
-  transition-delay: 0.25;
-  margin: 0;
-}
-
-.theme-toggle {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  box-shadow: none;
-  color: var(--indigo);
-  transition: color 0.2s ease-out;
-}
-.theme-toggle:focus {
-  outline: none;
-}
-.theme-toggle:hover {
-  color: var(--yellow-deep);
-}
-[data-theme='dark'] .theme-toggle {
-  color: var(--titanium-white);
-}
-[data-theme='dark'] .theme-toggle:hover {
-  color: var(--yellow-deep);
-}
-
-.img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-position: center center;
-  background-size: cover;
-  border-radius: 100%;
-}
-
-.hidden {
-  visibility: hidden;
-  position: absolute;
-  text-indent: -9999px;
-}
-
-/* Layout */
-.site-main {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  flex: 1 1 auto;
-}
+/* Page frame
+/* ---------------------------------------------------------- */
 
 .site-wrapper {
   padding: 3vw;
   min-height: 100vh;
   max-width: 1920px;
-  margin-right: auto;
-  margin-left: auto;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+
+.site-main {
+  padding: 3rem 0;
+  flex: 1 1 auto;
 }
 
 @media (max-width: 850px) {
@@ -75,71 +21,9 @@ body {
   }
 }
 
-/* Page Head */
-.page-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 13vw 0;
-  max-width: 70%;
-  margin: auto;
-  text-align: center;
-}
+/* Site navigation
+/* ---------------------------------------------------------- */
 
-.page-head-title {
-  margin: 0;
-  font-size: 4.2rem;
-  color: var(--color-base);
-  font-weight: 400;
-}
-
-@media (max-width: 500px) {
-  .page-head-title {
-    font-size: 2rem;
-  }
-}
-
-.page-head-description {
-  margin: 0 0 1.6vw;
-  color: color(var(--color-border) l(-20%));
-  font-size: 2.2rem;
-  line-height: 1.35em;
-}
-
-@media (max-width: 500px) {
-  .page-head-description {
-    font-size: 1.6rem;
-  }
-}
-
-/* Footer */
-.site-foot {
-  font-family: var(--font-sans-serif);
-  font-weight: 300;
-  margin: 3vw 0 1vw;
-  text-align: center;
-  color: var(--color-base);
-  font-size: 1.3rem;
-  line-height: 1.6;
-}
-
-.site-foot div {
-  margin: 0.3rem 0;
-}
-
-footer.site-foot a {
-  text-decoration: underline;
-}
-
-.site-foot a {
-  color: var(--color-base);
-}
-.site-foot a:hover {
-  color: var(--color-hover);
-}
-
-/* Site Navigation */
 .site-head {
   position: relative;
   z-index: 300;
@@ -184,20 +68,18 @@ footer.site-foot a {
   color: var(--color-base);
   font-family: var(--font-sans-serif);
   font-weight: 400;
-  font-size: 1.8rem; /* Increased size again */
+  font-size: 1.8rem;
   text-transform: lowercase;
   font-variant: small-caps;
   letter-spacing: 1px;
 }
-.site-head-logo:hover {
-  color: var(--color-hover);
-}
-.site-head-left a:hover {
-  color: var(--quin-rose);
-}
 
 .site-head a:hover {
   text-decoration: none;
+}
+
+.site-head-left a:hover {
+  color: var(--quin-rose);
 }
 
 /*
@@ -219,17 +101,22 @@ footer.site-foot a {
 }
 
 .site-head-logo {
-  font-family: var(--font-display);
   flex-shrink: 0;
   display: block;
   padding: 10px;
   color: var(--color-base);
+  font-family: var(--font-display);
   font-size: 2.5rem;
-  line-height: 0.9;
   font-weight: 400;
-  text-transform: uppercase;
+  line-height: 0.9;
   letter-spacing: 1px;
   text-align: right;
+  text-transform: uppercase;
+}
+
+.site-head-logo:hover {
+  color: var(--color-hover);
+  text-decoration: none;
 }
 
 .logo-lead,
@@ -239,17 +126,6 @@ footer.site-foot a {
 
 .logo-lead {
   font-size: 3.5rem;
-}
-
-.site-head-logo:hover {
-  text-decoration: none;
-}
-
-.site-head-logo img {
-  display: block;
-  margin-top: 2px;
-  width: auto;
-  height: 28px;
 }
 
 .site-head-right {
@@ -268,44 +144,151 @@ footer.site-foot a {
   gap: 0.75rem;
 }
 
-/* Instagram icon sits left of the theme toggle, same size (24px). */
-.site-head-right a.nav-instagram {
+/* Instagram icon and theme toggle, both 22px, sitting side by side. */
+.site-head-right a.nav-instagram,
+.theme-toggle {
   display: flex;
   align-items: center;
   padding: 0;
-  color: var(--indigo);
+  color: var(--color-base);
+  background: transparent;
+  border: none;
   transition: color 0.2s ease-out;
 }
-.site-head-right a.nav-instagram:hover {
+
+.site-head-right a.nav-instagram:hover,
+.theme-toggle:hover {
   color: var(--yellow-deep);
 }
+
 .nav-instagram svg {
-  display: block;
   width: 22px;
   height: 22px;
   fill: currentColor;
 }
-[data-theme='dark'] .site-head-right a.nav-instagram {
-  color: var(--titanium-white);
-}
-[data-theme='dark'] .site-head-right a.nav-instagram:hover {
-  color: var(--yellow-deep);
+
+/* The icon for the theme you would switch *to* is the one on show. */
+.sun-icon {
+  display: none;
 }
 
-/* Mobile Nav */
+[data-theme='dark'] .sun-icon {
+  display: block;
+}
+
+[data-theme='dark'] .moon-icon {
+  display: none;
+}
+
+/* Footer
+/* ---------------------------------------------------------- */
+
+.site-foot {
+  margin: 3vw 0 1vw;
+  color: var(--color-base);
+  font-family: var(--font-sans-serif);
+  font-weight: 300;
+  font-size: 1.3rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.site-foot a {
+  color: var(--color-base);
+  text-decoration: underline;
+}
+
+.site-foot a:hover {
+  color: var(--color-hover);
+}
+
+/* Mobile navigation
+/* ---------------------------------------------------------- */
+
 .nav-burger {
   display: none;
   position: absolute;
   left: 0;
   z-index: 9999;
-  /* Colour lives here, not in hamburger.css, so it tracks the theme. */
+  padding: 0;
   color: var(--color-base);
+}
+
+.hamburger-box {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 16px;
+}
+
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+  position: absolute;
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.15s ease;
+}
+
+.hamburger-inner::before,
+.hamburger-inner::after {
+  content: '';
+}
+
+/* https://github.com/jonsuh/hamburgers, "collapse" variant. */
+.hamburger-inner {
+  top: auto;
+  bottom: 0;
+  transition-delay: 0.15s;
+  transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition-duration: 0.15s;
+}
+
+.hamburger-inner::before {
+  top: -7px;
+  transition:
+    top 0.12s 0.3s cubic-bezier(0.33333, 0.66667, 0.66667, 1),
+    transform 0.15s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+.hamburger-inner::after {
+  top: -14px;
+  bottom: -7px;
+  transition:
+    top 0.3s 0.3s cubic-bezier(0.33333, 0.66667, 0.66667, 1),
+    opacity 0.1s linear;
+}
+
+.site-head-open .hamburger-inner {
+  transition-delay: 0.32s;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transform: translate3d(0, -7px, 0) rotate(-45deg);
+}
+
+.site-head-open .hamburger-inner::before {
+  top: 0;
+  transition:
+    top 0.12s 0.18s cubic-bezier(0.33333, 0, 0.66667, 0.33333),
+    transform 0.15s 0.42s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transform: rotate(-90deg);
+}
+
+.site-head-open .hamburger-inner::after {
+  top: 0;
+  opacity: 0;
+  transition:
+    top 0.3s cubic-bezier(0.33333, 0, 0.66667, 0.33333),
+    opacity 0.1s 0.27s linear;
 }
 
 @media (max-width: 850px) {
   .site-head {
     padding: 0;
   }
+
   /* Centred in the 80px bar, with a 44px tap target. */
   .nav-burger {
     display: flex;
@@ -315,17 +298,17 @@ footer.site-foot a {
     left: 4px;
     width: 44px;
     height: 44px;
-    padding: 0;
   }
+
   .site-head-container {
     flex-direction: column;
     justify-content: flex-start;
     height: 80px;
-    background: rgba(255, 255, 255, 0);
     z-index: -1;
-    transition: all 0.4s ease-out;
     overflow: hidden;
+    transition: all 0.4s ease-out;
   }
+
   .site-head-left,
   .site-head-right {
     position: relative;
@@ -334,6 +317,7 @@ footer.site-foot a {
     transition: height 0.2s cubic-bezier(0.4, 0.01, 0.165, 0.99);
     transition-delay: 1s;
   }
+
   .site-head-left a,
   .site-head-right a {
     margin: 8px 0;
@@ -347,38 +331,42 @@ footer.site-foot a {
       opacity 0.2s cubic-bezier(0.4, 0.01, 0.165, 0.99);
     transform: scale(1.1) translateY(-25px);
   }
+
   .site-head-right a {
-    padding: 5px 0;
     margin: 1px 0;
+    padding: 5px 0;
     font-size: 2rem;
   }
+
   .nav {
     width: 100%;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    margin: 3vw 0 0 0;
+    margin: 3vw 0 0;
   }
+
   .site-head-left {
     order: 2;
-    margin: 0;
     width: 100%;
+    margin: 0;
   }
+
   .site-head-center {
     order: 1;
     position: static;
     z-index: auto;
-    display: flex;
-    justify-content: center;
     /* Keep the centred logo clear of the burger on both sides. */
     padding: 0 52px;
     margin-right: 0;
   }
+
   .site-head-right {
     order: 3;
     width: 100%;
     margin-top: 3vw;
   }
+
   .social-links {
     flex-direction: column;
     align-items: flex-start;
@@ -386,10 +374,7 @@ footer.site-foot a {
 
   .site-head-logo {
     font-size: 1.8rem;
-    letter-spacing: 1px;
     text-align: center;
-    max-width: none;
-    line-height: 0.9;
     white-space: nowrap;
   }
 
@@ -398,11 +383,10 @@ footer.site-foot a {
   }
 
   .site-head-open {
+    height: 100vh;
+    overflow: hidden;
     background: var(--color-bg);
     transition: background 0.5s ease-out;
-    transition-delay: 0.25;
-    overflow: hidden;
-    height: 100vh;
   }
 
   .site-head-open .site-head-container {
@@ -423,8 +407,9 @@ footer.site-foot a {
     transition:
       transform 0.6s cubic-bezier(0.4, 0.01, 0.165, 0.99),
       opacity 0.9s cubic-bezier(0.4, 0.01, 0.165, 0.99);
-    transform: scale(1) translateY(0px);
+    transform: scale(1) translateY(0);
   }
+
   .site-head-open .site-foot {
     display: block;
     position: fixed;
